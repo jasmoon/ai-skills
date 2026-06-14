@@ -16,6 +16,7 @@ This skill package contains everything needed to use Task Observer in Claude Cod
 - **README.md** — Overview and quick start guide
 - **SETUP-GUIDE.md** — Choose between Personal (mobile + desktops) or Work (desktops only) setup
 - **INSTALLATION.md** — Step-by-step setup instructions for both configurations
+- **UPDATE-GUIDE.md** — How to sync SKILL.md changes to Claude Code (both setups)
 - **LICENSE** — Creative Commons Attribution 4.0 International (CC BY 4.0) license
 - **MANIFEST.md** — This file; describes package contents
 
@@ -31,7 +32,9 @@ The other files are for your reference and setup, but only `SKILL.md` needs to b
 |------|------|----------|
 | SKILL.md | ~37 KB | Main skill definition (upload this) |
 | README.md | ~1 KB | Quick overview |
-| INSTALLATION.md | ~2 KB | Setup guide |
+| SETUP-GUIDE.md | ~1 KB | Choose your setup |
+| INSTALLATION.md | ~3 KB | Setup & sync instructions |
+| UPDATE-GUIDE.md | ~1 KB | How to update changes |
 | LICENSE | <1 KB | License terms |
 
 ## Version Information
@@ -49,6 +52,12 @@ The other files are for your reference and setup, but only `SKILL.md` needs to b
 4. Upload `SKILL.md` to Claude Code or Claude.ai Web
 5. Add activation instruction to your configuration
 6. Invoke the skill at the start of task-oriented sessions
+
+## After You're Up and Running
+
+- **Making changes?** See `UPDATE-GUIDE.md` for how to sync SKILL.md updates to Claude Code
+- **Work setup:** Changes sync automatically via git reference
+- **Personal setup:** Re-upload updated SKILL.md or update inline in Project Instructions
 
 ## After Installation
 

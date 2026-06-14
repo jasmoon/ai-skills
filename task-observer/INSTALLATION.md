@@ -46,6 +46,24 @@ On mobile devices:
 3. At session end, save the handoff doc to your cloud folder
 4. On your next device, retrieve and paste it to restore observations
 
+#### Syncing SKILL.md Updates (Personal Setup)
+
+When you update `SKILL.md` in your repository:
+
+1. **Store updated file in cloud:**
+   - Save the updated `SKILL.md` to your cloud folder alongside observation handoff docs
+   - Alternatively, commit to your repository and pull the latest version
+
+2. **In next Claude.ai Web session:**
+   - Upload the latest `SKILL.md` at session start
+   - Or update relevant sections in your Project Instructions
+
+3. **For quick updates without re-uploading:**
+   - Copy the updated content directly into your Project Instructions
+   - Use this for frequently-changed sections
+
+**Tip:** Keep a copy of `SKILL.md` in your cloud storage folder for easy access across devices.
+
 ---
 
 ## Work Setup
@@ -93,6 +111,31 @@ your-project/
 ```
 
 The skill will auto-create this structure on first use if you prefer.
+
+#### Step 4: Syncing SKILL.md Updates (Work Setup)
+
+When you update `SKILL.md` in your repository, Claude Code automatically picks up changes:
+
+**Recommended (Auto-sync):**
+1. Edit `task-observer/SKILL.md` in your repository
+2. Commit the changes to git
+3. Claude Code reads the live file on each session start — no re-upload needed
+
+**To enable auto-sync**, add this to your `CLAUDE.md`:
+
+```markdown
+## Skills
+
+The task-observer skill is stored in the project at: `task-observer/SKILL.md`
+Claude Code reads this file at session start, so updates sync automatically.
+```
+
+**If manual re-upload is needed:**
+1. Edit `task-observer/SKILL.md` locally
+2. In Claude Code, re-upload via the skills management interface
+3. Restart your session to load the updated skill
+
+**Multiple desktops:** Keep `task-observer/` in a git repository or shared workspace so all desktops access the same `SKILL.md`.
 
 ---
 

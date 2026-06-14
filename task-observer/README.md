@@ -20,6 +20,8 @@ Use this skill during any multi-step task, agentic workflow, or substantive work
 
 Quick install in [INSTALLATION.md](INSTALLATION.md) with step-by-step guidance for each setup.
 
+**Need to update the skill?** See [UPDATE-GUIDE.md](UPDATE-GUIDE.md) for syncing changes to Claude Code.
+
 ## Key Features
 
 - **Silent observation** — captures insights without interrupting your work
