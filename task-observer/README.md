@@ -14,22 +14,11 @@ Use this skill during any multi-step task, agentic workflow, or substantive work
 
 ## Installation
 
-### In Claude Code
+**Choose your setup:**
+- **Personal Projects** (mobile + multiple desktops) → See [SETUP-GUIDE.md](SETUP-GUIDE.md)
+- **Work Projects** (local desktops only) → See [SETUP-GUIDE.md](SETUP-GUIDE.md)
 
-1. Open the skill upload dialog in Claude Code
-2. Upload the `SKILL.md` file from this directory
-3. Add the activation instruction to your project's `CLAUDE.md`:
-
-```markdown
-At the start of any task-oriented session — any interaction where you will
-use tools and produce deliverables — invoke the task-observer skill before
-beginning work. This ensures skill improvement opportunities are captured
-throughout the session.
-```
-
-### In Claude.ai Web
-
-Upload `SKILL.md` via the skill upload interface. Add the same activation instruction to your Project Instructions.
+Quick install in [INSTALLATION.md](INSTALLATION.md) with step-by-step guidance for each setup.
 
 ## Key Features
 

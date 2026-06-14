@@ -6,7 +6,7 @@ This skill package contains everything needed to use Task Observer in Claude Cod
 
 ### Core Files
 
-- **SKILL.md** — The main skill definition. Upload this file to Claude Code to install the skill.
+- **SKILL.md** — The main skill definition. Upload this file to Claude Code or Claude.ai Web.
   - Contains complete methodology documentation
   - Includes metadata for Claude Code recognition
   - ~37KB of comprehensive guidance
@@ -14,7 +14,8 @@ This skill package contains everything needed to use Task Observer in Claude Cod
 ### Documentation
 
 - **README.md** — Overview and quick start guide
-- **INSTALLATION.md** — Step-by-step installation instructions for all platforms
+- **SETUP-GUIDE.md** — Choose between Personal (mobile + desktops) or Work (desktops only) setup
+- **INSTALLATION.md** — Step-by-step setup instructions for both configurations
 - **LICENSE** — Creative Commons Attribution 4.0 International (CC BY 4.0) license
 - **MANIFEST.md** — This file; describes package contents
 
@@ -27,7 +28,7 @@ The other files are for your reference and setup, but only `SKILL.md` needs to b
 ## File Sizes
 
 | File | Size | Purpose |
-|------|------|---------|
+|------|------|----------|
 | SKILL.md | ~37 KB | Main skill definition (upload this) |
 | README.md | ~1 KB | Quick overview |
 | INSTALLATION.md | ~2 KB | Setup guide |
@@ -43,10 +44,11 @@ The other files are for your reference and setup, but only `SKILL.md` needs to b
 ## Getting Started
 
 1. Read `README.md` for an overview
-2. Follow `INSTALLATION.md` for step-by-step setup
-3. Upload `SKILL.md` to Claude Code
-4. Add activation instruction to your `CLAUDE.md`
-5. Invoke the skill at the start of task-oriented sessions
+2. Check `SETUP-GUIDE.md` to choose between Personal or Work setup
+3. Follow `INSTALLATION.md` for your chosen setup's step-by-step instructions
+4. Upload `SKILL.md` to Claude Code or Claude.ai Web
+5. Add activation instruction to your configuration
+6. Invoke the skill at the start of task-oriented sessions
 
 ## After Installation
 

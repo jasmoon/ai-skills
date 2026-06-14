@@ -1,14 +1,59 @@
 # Task Observer - Installation Guide
 
-## Quick Start
+**First time?** Start with [SETUP-GUIDE.md](SETUP-GUIDE.md) to choose between Personal or Work setup.
 
-1. **Download the skill file** — grab `SKILL.md` from this directory
-2. **Upload to Claude Code** — use the skill upload feature in your Claude Code interface
-3. **Activate in your project** — add the activation instruction to your `CLAUDE.md`
+---
 
-## Step-by-Step for Claude Code
+## Personal Setup
+### Mobile + Multiple Desktops
 
-### Step 1: Upload the Skill
+This setup uses Claude.ai Web as primary, with handoff docs to sync observations across devices.
+
+#### Step 1: Upload the Skill to Claude.ai Web
+
+1. Go to a Claude.ai chat session
+2. Click on "Upload Files" or the attachment button
+3. Select `SKILL.md` from this directory
+4. The skill is now available for that session
+
+#### Step 2: Activate in Your Project Instructions
+
+Add to your **Project Instructions** (Settings → Project → Instructions):
+
+```
+At the start of any task-oriented session where you will use tools and 
+produce deliverables, invoke the task-observer skill before beginning work.
+
+When the session winds down, ask the skill to generate a handoff document
+with all observations. Copy this to your cloud storage (Dropbox, iCloud, etc.)
+for access across devices.
+```
+
+#### Step 3: Set Up Cross-Device Sync (Optional)
+
+Create a cloud-synced folder for observation handoff docs:
+- **Dropbox:** `~/Dropbox/claude-observations/`
+- **iCloud:** `~/Library/Mobile Documents/com~apple~CloudDocs/claude-observations/`
+- **Google Drive:** `~/Google Drive/claude-observations/`
+
+Store handoff docs here, then paste them into the next session to restore context.
+
+#### Step 4: Mobile Workflow
+
+On mobile devices:
+1. Use Claude.ai Web in your browser
+2. Upload `SKILL.md` at the start of each session
+3. At session end, save the handoff doc to your cloud folder
+4. On your next device, retrieve and paste it to restore observations
+
+---
+
+## Work Setup
+### Local Desktops Only
+
+This setup uses Claude Code as primary, with persistent local storage.
+
+#### Step 1: Upload the Skill to Claude Code
 
 1. Open Claude Code (CLI, desktop, or web)
 2. Access the skills management interface
@@ -16,7 +61,7 @@
 4. Choose the `SKILL.md` file from the `task-observer/` directory
 5. Confirm the upload
 
-### Step 2: Activate in Your Project
+#### Step 2: Activate in Your Project
 
 Add this text to your project's `CLAUDE.md` file:
 
@@ -33,7 +78,7 @@ tagged to that skill. Apply their insights to the current work, even if
 the skill file hasn't been updated yet.
 ```
 
-### Step 3: Set Up Skill Observations Directory (Optional)
+#### Step 3: Set Up Skill Observations Directory (Optional)
 
 Create a `skill-observations` directory in your project root for persistent observation logging:
 
@@ -49,32 +94,11 @@ your-project/
 
 The skill will auto-create this structure on first use if you prefer.
 
-## For Claude.ai Web Users
+---
 
-### Upload the Skill
+## For Claude Code Users (Work Setup)
 
-1. Go to a Claude.ai chat session
-2. Click on "Upload Files" or the attachment button
-3. Select `SKILL.md`
-4. The skill is now available for that session
-
-### Persistent Use Across Sessions
-
-Add to your **Project Instructions** (Settings → Project → Instructions):
-
-```
-At the start of any task-oriented session where you will use tools and 
-produce deliverables, invoke the task-observer skill before beginning work.
-```
-
-Then upload the skill file at the start of each session, or ask Claude to 
-reference it during work.
-
-## For Cowork Users
-
-1. Upload `SKILL.md` to your Cowork workspace
-2. Add the activation instruction to your workspace `CLAUDE.md`
-3. The skill will have access to persistent storage in your workspace
+Multiple desktops — set up the skill in each project following steps 1-3 above.
 
 ## What Gets Created
 
