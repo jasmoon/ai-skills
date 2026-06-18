@@ -8,7 +8,7 @@
 | Multiple devices | ✅ With handoff docs | ✅ Multiple desktops |
 | Persistent logs | ✅ Cloud synced | ✅ Local filesystem |
 | Setup complexity | Medium | Low |
-| Primary interface | Claude.ai Web | Claude Code |
+| Primary interface | Claude.ai Web | Claude Code or CLI |
 | Sync method | Manual handoff docs | Automatic (local) |
 
 **Personal** — if you work from multiple devices or on mobile.
@@ -64,7 +64,7 @@ Since the skill is uploaded once and persisted in Claude.ai Web, no re-upload is
 
 #### Step 5: Syncing SKILL.md Updates
 
-When you update `SKILL.md` in your repository:
+When there are updates to `SKILL.md`:
 
 1. Go to the Claude.ai Web skills interface and replace the existing skill with the updated `SKILL.md`
 2. The update is then live for all future sessions

@@ -16,8 +16,6 @@ Use this skill during any multi-step task, agentic workflow, or substantive work
 
 See [INSTALLATION.md](INSTALLATION.md) — covers both Personal (mobile + multiple desktops) and Work (local desktops only) setups, including syncing updates.
 
-**Need to update the skill?** See [UPDATE-GUIDE.md](UPDATE-GUIDE.md) for a quick reference.
-
 ## Key Features
 
 - **Silent observation** — captures insights without interrupting your work
