@@ -23,12 +23,15 @@ You can use both simultaneously — follow each section separately for different
 
 This setup uses Claude.ai Web as primary, with handoff docs to sync observations across devices.
 
-#### Step 1: Upload the Skill to Claude.ai Web
+#### Step 1: Add the Skill to Your Claude.ai Project
 
-1. Go to a Claude.ai chat session
-2. Click on "Upload Files" or the attachment button
-3. Select `SKILL.md` from this directory
-4. The skill is now available for that session
+Upload `SKILL.md` once as a Project connector — it persists across all sessions in that project, so you don't need to re-upload it each time.
+
+1. Open your Claude.ai Project (or create one)
+2. Go to Project Settings → add `SKILL.md` as a project file/connector
+3. The skill is now available in every session within that project
+
+Alternatively, upload `SKILL.md` in any Claude Code session to install it permanently — it will then be available in future Claude Code sessions without re-uploading.
 
 #### Step 2: Activate in Your Project Instructions
 
@@ -54,9 +57,10 @@ Store handoff docs here, then paste them into the next session to restore contex
 
 #### Step 4: Mobile Workflow
 
-On mobile devices:
-1. Use Claude.ai Web in your browser
-2. Upload `SKILL.md` at the start of each session
+Since the skill is persisted via your Claude.ai Project, no re-upload is needed on mobile:
+
+1. Open Claude.ai Web in your browser and navigate to your Project
+2. Start your session — the skill is already available
 3. At session end, save the handoff doc to your cloud folder
 4. On your next device, retrieve and paste it to restore observations
 
@@ -64,11 +68,9 @@ On mobile devices:
 
 When you update `SKILL.md` in your repository:
 
-1. Save the updated `SKILL.md` to your cloud folder alongside observation handoff docs
-2. In your next Claude.ai Web session, upload the latest `SKILL.md` at session start
+1. Go to your Claude.ai Project Settings and replace the existing `SKILL.md` connector with the updated file
+2. The update is then live for all future sessions in that project
 3. For quick tweaks, copy the updated section directly into your Project Instructions instead
-
-**Tip:** Keep a copy of `SKILL.md` in your cloud storage folder for easy access across devices.
 
 ---
 
