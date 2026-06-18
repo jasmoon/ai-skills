@@ -1,6 +1,20 @@
 # Task Observer - Installation Guide
 
-**First time?** Start with [SETUP-GUIDE.md](SETUP-GUIDE.md) to choose between Personal or Work setup.
+## Choose Your Setup
+
+| Feature | Personal | Work |
+|---------|----------|------|
+| Mobile access | ✅ Via Claude.ai Web | ❌ |
+| Multiple devices | ✅ With handoff docs | ✅ Multiple desktops |
+| Persistent logs | ✅ Cloud synced | ✅ Local filesystem |
+| Setup complexity | Medium | Low |
+| Primary interface | Claude.ai Web | Claude Code |
+| Sync method | Manual handoff docs | Automatic (local) |
+
+**Personal** — if you work from multiple devices or on mobile.
+**Work** — if you work from local desktops only and want persistent local logs.
+
+You can use both simultaneously — follow each section separately for different projects.
 
 ---
 
@@ -46,21 +60,13 @@ On mobile devices:
 3. At session end, save the handoff doc to your cloud folder
 4. On your next device, retrieve and paste it to restore observations
 
-#### Syncing SKILL.md Updates (Personal Setup)
+#### Step 5: Syncing SKILL.md Updates
 
 When you update `SKILL.md` in your repository:
 
-1. **Store updated file in cloud:**
-   - Save the updated `SKILL.md` to your cloud folder alongside observation handoff docs
-   - Alternatively, commit to your repository and pull the latest version
-
-2. **In next Claude.ai Web session:**
-   - Upload the latest `SKILL.md` at session start
-   - Or update relevant sections in your Project Instructions
-
-3. **For quick updates without re-uploading:**
-   - Copy the updated content directly into your Project Instructions
-   - Use this for frequently-changed sections
+1. Save the updated `SKILL.md` to your cloud folder alongside observation handoff docs
+2. In your next Claude.ai Web session, upload the latest `SKILL.md` at session start
+3. For quick tweaks, copy the updated section directly into your Project Instructions instead
 
 **Tip:** Keep a copy of `SKILL.md` in your cloud storage folder for easy access across devices.
 
@@ -112,9 +118,7 @@ your-project/
 
 The skill will auto-create this structure on first use if you prefer.
 
-#### Step 4: Syncing SKILL.md Updates (Work Setup)
-
-When you update `SKILL.md` in your repository, Claude Code automatically picks up changes:
+#### Step 4: Syncing SKILL.md Updates
 
 **Recommended (Auto-sync):**
 1. Edit `task-observer/SKILL.md` in your repository
@@ -138,10 +142,6 @@ Claude Code reads this file at session start, so updates sync automatically.
 **Multiple desktops:** Keep `task-observer/` in a git repository or shared workspace so all desktops access the same `SKILL.md`.
 
 ---
-
-## For Claude Code Users (Work Setup)
-
-Multiple desktops — set up the skill in each project following steps 1-3 above.
 
 ## What Gets Created
 

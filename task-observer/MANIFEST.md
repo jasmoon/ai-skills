@@ -14,9 +14,8 @@ This skill package contains everything needed to use Task Observer in Claude Cod
 ### Documentation
 
 - **README.md** — Overview and quick start guide
-- **SETUP-GUIDE.md** — Choose between Personal (mobile + desktops) or Work (desktops only) setup
-- **INSTALLATION.md** — Step-by-step setup instructions for both configurations
-- **UPDATE-GUIDE.md** — How to sync SKILL.md changes to Claude Code (both setups)
+- **INSTALLATION.md** — Setup instructions for Personal (mobile + desktops) and Work (desktops only) configurations, including syncing updates
+- **UPDATE-GUIDE.md** — Quick reference for syncing SKILL.md changes to Claude Code
 - **LICENSE** — Creative Commons Attribution 4.0 International (CC BY 4.0) license
 - **MANIFEST.md** — This file; describes package contents
 
@@ -32,9 +31,8 @@ The other files are for your reference and setup, but only `SKILL.md` needs to b
 |------|------|----------|
 | SKILL.md | ~37 KB | Main skill definition (upload this) |
 | README.md | ~1 KB | Quick overview |
-| SETUP-GUIDE.md | ~1 KB | Choose your setup |
 | INSTALLATION.md | ~3 KB | Setup & sync instructions |
-| UPDATE-GUIDE.md | ~1 KB | How to update changes |
+| UPDATE-GUIDE.md | ~1 KB | How to sync updates |
 | LICENSE | <1 KB | License terms |
 
 ## Version Information
@@ -47,11 +45,10 @@ The other files are for your reference and setup, but only `SKILL.md` needs to b
 ## Getting Started
 
 1. Read `README.md` for an overview
-2. Check `SETUP-GUIDE.md` to choose between Personal or Work setup
-3. Follow `INSTALLATION.md` for your chosen setup's step-by-step instructions
-4. Upload `SKILL.md` to Claude Code or Claude.ai Web
-5. Add activation instruction to your configuration
-6. Invoke the skill at the start of task-oriented sessions
+2. Follow `INSTALLATION.md` — choose Personal or Work setup at the top
+3. Upload `SKILL.md` to Claude Code or Claude.ai Web
+4. Add activation instruction to your configuration
+5. Invoke the skill at the start of task-oriented sessions
 
 ## After You're Up and Running
 
