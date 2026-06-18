@@ -8,10 +8,10 @@ Made changes to `SKILL.md`? Here's how to sync them across your setups.
 
 ### Quick Update
 
-**Option 1: Re-upload the file**
-1. Save updated `SKILL.md` to your cloud storage folder
-2. In your next Claude.ai Web session, upload the latest `SKILL.md`
-3. Done — changes take effect immediately
+**Option 1: Replace the skill in Claude.ai Web**
+1. Go to the Claude.ai Web skills interface
+2. Replace the existing skill with the updated `SKILL.md`
+3. Done — changes take effect for all future sessions
 
 **Option 2: Inline update** (for small changes)
 1. Edit the specific section directly in your Claude.ai Project Instructions
@@ -20,9 +20,8 @@ Made changes to `SKILL.md`? Here's how to sync them across your setups.
 
 ### Best Practice
 
-- Keep `SKILL.md` in your cloud folder (Dropbox/iCloud/Google Drive)
-- At the start of each session, upload the latest version
-- Or maintain a "master" copy in your project instructions that you update manually
+- Keep the canonical `SKILL.md` in your repository (source of truth)
+- When updating, replace the skill via the Claude.ai Web skills interface
 
 ---
 
@@ -60,7 +59,7 @@ The task-observer skill is stored in: `task-observer/SKILL.md`
 
 | Method | Personal | Work | Effort | Sync Time |
 |--------|----------|------|--------|----------|
-| Re-upload file | ✅ | ✅ | Medium | Manual |
+| Replace skill file | ✅ | ✅ | Medium | Manual |
 | Inline edit | ✅ | ❌ | Low | Immediate |
 | Auto-sync (git) | ❌ | ✅ | Low | Automatic |
 

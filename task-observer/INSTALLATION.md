@@ -23,15 +23,13 @@ You can use both simultaneously — follow each section separately for different
 
 This setup uses Claude.ai Web as primary, with handoff docs to sync observations across devices.
 
-#### Step 1: Add the Skill to Your Claude.ai Project
+#### Step 1: Upload the Skill to Claude.ai Web
 
-Upload `SKILL.md` once as a Project connector — it persists across all sessions in that project, so you don't need to re-upload it each time.
+Upload `SKILL.md` once as a skill in Claude.ai Web — it persists and is available across all future sessions without re-uploading.
 
-1. Open your Claude.ai Project (or create one)
-2. Go to Project Settings → add `SKILL.md` as a project file/connector
-3. The skill is now available in every session within that project
-
-Alternatively, upload `SKILL.md` in any Claude Code session to install it permanently — it will then be available in future Claude Code sessions without re-uploading.
+1. Open Claude.ai Web
+2. Go to the skills interface and upload `SKILL.md`
+3. The skill is now available in every session
 
 #### Step 2: Activate in Your Project Instructions
 
@@ -57,19 +55,19 @@ Store handoff docs here, then paste them into the next session to restore contex
 
 #### Step 4: Mobile Workflow
 
-Since the skill is persisted via your Claude.ai Project, no re-upload is needed on mobile:
+Since the skill is uploaded once and persisted in Claude.ai Web, no re-upload is needed on mobile:
 
-1. Open Claude.ai Web in your browser and navigate to your Project
+1. Open Claude.ai Web in your browser
 2. Start your session — the skill is already available
 3. At session end, save the handoff doc to your cloud folder
-4. On your next device, retrieve and paste it to restore observations
+4. On your next device, open Claude.ai Web and paste the handoff doc to restore observations
 
 #### Step 5: Syncing SKILL.md Updates
 
 When you update `SKILL.md` in your repository:
 
-1. Go to your Claude.ai Project Settings and replace the existing `SKILL.md` connector with the updated file
-2. The update is then live for all future sessions in that project
+1. Go to the Claude.ai Web skills interface and replace the existing skill with the updated `SKILL.md`
+2. The update is then live for all future sessions
 3. For quick tweaks, copy the updated section directly into your Project Instructions instead
 
 ---
