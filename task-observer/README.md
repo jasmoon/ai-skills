@@ -14,13 +14,7 @@ Use this skill during any multi-step task, agentic workflow, or substantive work
 
 ## Installation
 
-**Choose your setup:**
-- **Personal Projects** (mobile + multiple desktops) → See [SETUP-GUIDE.md](SETUP-GUIDE.md)
-- **Work Projects** (local desktops only) → See [SETUP-GUIDE.md](SETUP-GUIDE.md)
-
-Quick install in [INSTALLATION.md](INSTALLATION.md) with step-by-step guidance for each setup.
-
-**Need to update the skill?** See [UPDATE-GUIDE.md](UPDATE-GUIDE.md) for syncing changes to Claude Code.
+See [INSTALLATION.md](INSTALLATION.md) — covers both Personal (mobile + multiple desktops) and Work (local desktops only) setups, including syncing updates.
 
 ## Key Features
 

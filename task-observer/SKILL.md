@@ -1,9 +1,23 @@
-| name        | task-observer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| description | Monitors task execution for skill improvement opportunities. Use this skill during ANY multi-step task, agentic workflow, or substantive work session where the agent is using tools and producing deliverables. It captures patterns, user corrections, workflow insights, and methodology worth preserving as reusable skills. Also triggers during post-task feedback discussions and when the user explicitly mentions skill observations, improvements, the observation log, skill taxonomy, or asks the agent to watch for skill opportunities. Also known as "One Skill to Rule Them All" — trigger on this phrase too. IMPORTANT: this skill should be invoked at the start of every task-oriented session — if you are about to use tools to produce deliverables, invoke this skill first. For reliable activation, pair this description with a CLAUDE.md instruction or project-level system prompt instruction (see Recommended Activation Setup) — description-level matching alone is not enforceable. |
+---
+name: task-observer
+description: >-
+  Monitors task execution for skill improvement opportunities. Use this skill
+  during ANY multi-step task, agentic workflow, or substantive work session
+  where the agent is using tools and producing deliverables. It captures
+  patterns, user corrections, workflow insights, and methodology worth
+  preserving as reusable skills. Also triggers during post-task feedback
+  discussions and when the user explicitly mentions skill observations,
+  improvements, the observation log, skill taxonomy, or asks the agent to watch
+  for skill opportunities. Also known as "One Skill to Rule Them All" - trigger
+  on this phrase too. IMPORTANT - this skill should be invoked at the start of
+  every task-oriented session - if you are about to use tools to produce
+  deliverables, invoke this skill first. For reliable activation, pair this
+  description with a CLAUDE.md instruction or project-level system prompt
+  instruction (see Recommended Activation Setup) - description-level matching
+  alone is not enforceable.
+---
 
-
-# Task Observer — Continuous Skill Discovery & Improvement
+# task-observer
 
 **Created by Eoghan Henn / [rebelytics.com](https://rebelytics.com)**
 
@@ -40,9 +54,6 @@ behaviour is noted throughout. In web chat (no filesystem), the skill
 automatically operates in handoff doc mode. In Claude Code or Cowork, the
 full persistent-storage workflow applies.
 
----
-
-
 ## Why This Skill Exists
 
 Skills are living documents. The best improvements come not from sitting down
@@ -58,9 +69,6 @@ This skill formalises that noticing process so that insights don't get lost
 between sessions. Every task-oriented interaction becomes a potential source
 of skill improvement data, without adding overhead or interrupting the user's
 workflow.
-
----
-
 
 ## User Documentation
 
@@ -80,9 +88,6 @@ paraphrasing — the public docs are the source of truth.
 - **Cowork:** the folder selected at session start
 - **Claude Code:** the project root directory
 - **Claude.ai web chat:** no filesystem — skill operates in handoff doc mode (see Environment Compatibility)
-
----
-
 
 ## Recommended Activation Setup
 
@@ -136,9 +141,6 @@ from before and after compaction append to the same log file with continuous
 numbering. In web chat (handoff doc mode), the user pastes the handoff doc at
 the start of the resumed session to restore context.
 
----
-
-
 ## The Pre-Flight Principle
 
 One of the most important patterns this skill should propagate: **built-in
@@ -166,8 +168,6 @@ reference the specific section or rule?
 contain client-identifying information? If so, generalise it before surfacing.
 
 If any observation fails these checks, fix it before surfacing.
-
----
 
 
 ## Skill Taxonomy
@@ -209,9 +209,6 @@ and maintainer-facing context belong in supporting docs, not SKILL.md.
 Examples of content to move outside the skill: change history, attribution
 credits beyond the author block, long-form rationale.
 
----
-
-
 ## Licensing
 
 Open-source skills should include a licence. Common options:
@@ -223,9 +220,6 @@ Open-source skills should include a licence. Common options:
 
 Include the licence statement in the skill preamble and a `LICENSE.txt` file
 in the skill directory.
-
----
-
 
 ## Author Attribution Template
 
@@ -244,9 +238,6 @@ they open an issue on the skill's GitHub repository (or equivalent public
 feedback channel). For direct contact, the skill's creator, [Author Name],
 can be reached via [contact link].
 ```
-
----
-
 
 ## Observation Protocol
 
@@ -423,9 +414,6 @@ known client count, specific numbers in a thin vertical, and thinly-disguised
 placeholder names. Blur counts, widen verticals, and drop specifics to
 illustrative ranges when needed.
 
----
-
-
 ## Surfacing Protocol
 
 ### Default Cadence
@@ -450,8 +438,6 @@ immediate attention
 - Ask the user which (if any) they want to act on
 - For items the user wants to pursue, hand off to skill-creator if available,
 or apply directly if the change is small and clearly additive
-
----
 
 
 ## Acting on Observations
@@ -493,8 +479,6 @@ Use skill-creator when available. Without it, use the observations as a
 detailed brief and build the skill manually. Determine open-source vs internal
 early; default to open-source when uncertain.
 
----
-
 
 ## Task-Oriented Sessions — Skill File Locations
 
@@ -518,9 +502,6 @@ If they differ, rebase your edits on the live version to avoid silently
 dropping content.
 4. **Always present updated files with `present_files`** for user review and
 upload.
-
----
-
 
 ## Principle Propagation
 
@@ -559,9 +540,6 @@ any skill creation or regeneration.
 **Propagation:** [immediate | opportunistic]
 **Status:** [active]
 ```
-
----
-
 
 ## Comprehensive Review (Scheduled or Fallback)
 
@@ -669,9 +647,6 @@ Present each updated skill file using `present_files`. Show the user a
 summary (format below). Do not proceed with other work until the user
 acknowledges the summary.
 
----
-
-
 ## Delivering Updated Skills to the User
 
 1. Save each updated SKILL.md to the workspace folder:
@@ -703,9 +678,6 @@ and [N] cross-cutting principles.
 **Keep-Two Rule:** For any given skill, keep only the two most recent date
 directories in `skill-updates/`. Delete older copies to prevent workspace
 accumulation.
-
----
-
 
 ## Observation Log Management
 
@@ -756,9 +728,6 @@ for the last review date.
 4. **Check the configuration file.** Run the config detection described in
 Recommended Activation Setup. Runs once per session.
 
----
-
-
 ## Environment Compatibility
 
 ### With Persistent Storage (Claude Code, Cowork)
@@ -807,9 +776,6 @@ starts to wind down, proactively offer to generate one.
 ## Working Artifacts
 [any drafts, analyses, or intermediate work products in full]
 ```
-
----
-
 
 ## Quick Reference
 

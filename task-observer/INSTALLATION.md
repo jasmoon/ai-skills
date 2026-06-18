@@ -1,6 +1,20 @@
 # Task Observer - Installation Guide
 
-**First time?** Start with [SETUP-GUIDE.md](SETUP-GUIDE.md) to choose between Personal or Work setup.
+## Choose Your Setup
+
+| Feature | Personal | Work |
+|---------|----------|------|
+| Mobile access | ✅ Via Claude.ai Web | ❌ |
+| Multiple devices | ✅ With handoff docs | ✅ Multiple desktops |
+| Persistent logs | ✅ Cloud synced | ✅ Local filesystem |
+| Setup complexity | Medium | Low |
+| Primary interface | Claude.ai Web | Claude Code or CLI |
+| Sync method | Manual handoff docs | Automatic (local) |
+
+**Personal** — if you work from multiple devices or on mobile.
+**Work** — if you work from local desktops only and want persistent local logs.
+
+You can use both simultaneously — follow each section separately for different projects.
 
 ---
 
@@ -11,10 +25,11 @@ This setup uses Claude.ai Web as primary, with handoff docs to sync observations
 
 #### Step 1: Upload the Skill to Claude.ai Web
 
-1. Go to a Claude.ai chat session
-2. Click on "Upload Files" or the attachment button
-3. Select `SKILL.md` from this directory
-4. The skill is now available for that session
+Upload `SKILL.md` once as a skill in Claude.ai Web — it persists and is available across all future sessions without re-uploading.
+
+1. Open Claude.ai Web
+2. Go to the skills interface and upload `SKILL.md`
+3. The skill is now available in every session
 
 #### Step 2: Activate in Your Project Instructions
 
@@ -40,29 +55,20 @@ Store handoff docs here, then paste them into the next session to restore contex
 
 #### Step 4: Mobile Workflow
 
-On mobile devices:
-1. Use Claude.ai Web in your browser
-2. Upload `SKILL.md` at the start of each session
+Since the skill is uploaded once and persisted in Claude.ai Web, no re-upload is needed on mobile:
+
+1. Open Claude.ai Web in your browser
+2. Start your session — the skill is already available
 3. At session end, save the handoff doc to your cloud folder
-4. On your next device, retrieve and paste it to restore observations
+4. On your next device, open Claude.ai Web and paste the handoff doc to restore observations
 
-#### Syncing SKILL.md Updates (Personal Setup)
+#### Step 5: Syncing SKILL.md Updates
 
-When you update `SKILL.md` in your repository:
+When there are updates to `SKILL.md`:
 
-1. **Store updated file in cloud:**
-   - Save the updated `SKILL.md` to your cloud folder alongside observation handoff docs
-   - Alternatively, commit to your repository and pull the latest version
-
-2. **In next Claude.ai Web session:**
-   - Upload the latest `SKILL.md` at session start
-   - Or update relevant sections in your Project Instructions
-
-3. **For quick updates without re-uploading:**
-   - Copy the updated content directly into your Project Instructions
-   - Use this for frequently-changed sections
-
-**Tip:** Keep a copy of `SKILL.md` in your cloud storage folder for easy access across devices.
+1. Go to the Claude.ai Web skills interface and replace the existing skill with the updated `SKILL.md`
+2. The update is then live for all future sessions
+3. For quick tweaks, copy the updated section directly into your Project Instructions instead
 
 ---
 
@@ -112,9 +118,7 @@ your-project/
 
 The skill will auto-create this structure on first use if you prefer.
 
-#### Step 4: Syncing SKILL.md Updates (Work Setup)
-
-When you update `SKILL.md` in your repository, Claude Code automatically picks up changes:
+#### Step 4: Syncing SKILL.md Updates
 
 **Recommended (Auto-sync):**
 1. Edit `task-observer/SKILL.md` in your repository
@@ -138,10 +142,6 @@ Claude Code reads this file at session start, so updates sync automatically.
 **Multiple desktops:** Keep `task-observer/` in a git repository or shared workspace so all desktops access the same `SKILL.md`.
 
 ---
-
-## For Claude Code Users (Work Setup)
-
-Multiple desktops — set up the skill in each project following steps 1-3 above.
 
 ## What Gets Created
 
