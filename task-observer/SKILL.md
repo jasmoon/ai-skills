@@ -1,6 +1,20 @@
 ---
 name: task-observer
-description: Monitors task execution for skill improvement opportunities. Use this skill during ANY multi-step task, agentic workflow, or substantive work session where the agent is using tools and producing deliverables. It captures patterns, user corrections, workflow insights, and methodology worth preserving as reusable skills. Also triggers during post-task feedback discussions and when the user explicitly mentions skill observations, improvements, the observation log, skill taxonomy, or asks the agent to watch for skill opportunities. Also known as "One Skill to Rule Them All" — trigger on this phrase too. IMPORTANT: this skill should be invoked at the start of every task-oriented session — if you are about to use tools to produce deliverables, invoke this skill first. For reliable activation, pair this description with a CLAUDE.md instruction or project-level system prompt instruction (see Recommended Activation Setup) — description-level matching alone is not enforceable.
+description: >-
+  Monitors task execution for skill improvement opportunities. Use this skill
+  during ANY multi-step task, agentic workflow, or substantive work session
+  where the agent is using tools and producing deliverables. It captures
+  patterns, user corrections, workflow insights, and methodology worth
+  preserving as reusable skills. Also triggers during post-task feedback
+  discussions and when the user explicitly mentions skill observations,
+  improvements, the observation log, skill taxonomy, or asks the agent to watch
+  for skill opportunities. Also known as "One Skill to Rule Them All" - trigger
+  on this phrase too. IMPORTANT - this skill should be invoked at the start of
+  every task-oriented session - if you are about to use tools to produce
+  deliverables, invoke this skill first. For reliable activation, pair this
+  description with a CLAUDE.md instruction or project-level system prompt
+  instruction (see Recommended Activation Setup) - description-level matching
+  alone is not enforceable.
 ---
 
 # task-observer
@@ -515,6 +529,8 @@ it to the principles file.
 Principles that apply to all skills. Read as a mandatory checklist during
 any skill creation or regeneration.
 
+---
+
 ## Active Principles
 
 ### 1. [Principle title]
@@ -683,6 +699,8 @@ potential skill improvement or new skill opportunity.
 
 **Status key:** OPEN = not yet actioned | ACTIONED = skill updated/created |
 DECLINED = user decided not to pursue
+
+---
 
 ## [Date or Session Identifier]
 
