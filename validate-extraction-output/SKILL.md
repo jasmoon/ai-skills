@@ -47,7 +47,17 @@ Output conforming to a schema can be entirely noise. Every check that measures
 - [ ] **At least one fixture is captured, not constructed.** Tests written from
       the same mental model as the code test the model, so they pass in exactly
       the case where the model is wrong. A real captured payload is the only
-      artifact that can contradict a shared assumption.
+      artifact that can contradict a shared assumption. Tests written from the
+      *documentation* are the same failure with the source swapped: they encode
+      intent, and cannot discover that the documentation is wrong. On an
+      untested module the gap between the two is the most likely thing to find,
+      so write from observed behaviour first and compare to the docs second.
+- [ ] **A test that reproduces the bug may reproduce it for the wrong reason.**
+      A passing test proves an outcome, not a mechanism. A scaled-down fixture
+      routinely trips a different code path than the one it was written for, and
+      the assertion cannot tell the difference. Confirm the failure arrives by
+      the route you think it does before treating the test as a regression
+      guard.
 - [ ] **Treat a captured specimen as a dataset about the upstream system.** It
       answers questions it was never collected for — especially negative ones.
       An absent field is invisible from consuming code and obvious in a real
@@ -138,6 +148,12 @@ output is right.** This is the most expensive item on the list.
       a default action.
 - [ ] **Record every threshold with the population it was read off**, and
       re-derive it when ground truth arrives.
+- [ ] **Two thresholds ANDed together are not two checks.** A threshold encodes
+      an assumption that its signal carries constant information. When the
+      signals are correlated that assumption is usually false, and the pair
+      fails silently — each one passes for a reason the other has already made
+      irrelevant. Say what each threshold catches that the other does not; if
+      you cannot, you have one check and a decoration.
 - [ ] **Low overlap between two detectors is evidence they find different
       things**, not that one is weaker.
 - [ ] **A destructive action needs a proof, and "a good match" is not one.**
