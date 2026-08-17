@@ -250,8 +250,9 @@ a number?" — which is checkable at the point it matters.
 
 ## Boundary with neighbouring skills
 
-- **Polite external probing** — *may I fetch this, and at what rate*. That runs
-  before extraction; this runs after.
+- **`polite-external-probing`** — *may I fetch this, and at what rate*. That
+  runs before the fetch; this runs after extraction. A run can satisfy one and
+  fail the other in either direction.
 
 Write verification used to be listed here as a separate neighbour. It is §F
 instead, because it fires at the same moment this skill does — you are about to
