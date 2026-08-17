@@ -1,6 +1,6 @@
 ---
 name: validate-extraction-output
-description: Pre-delivery gate for any claim derived from extracted, parsed, or ingested data. Load BEFORE reporting a count, rate, success percentage, match result, coverage figure, or a diff against a destination dataset; before binding an action (write, delete, retire, flag, fill) to a classifier's verdict; and before concluding that an extractor "works". "The extraction worked" is four separate claims — structural validity, measurement, coverage, and meaning — and passing one says nothing about the other three. Triggers on phrases like "X% success", "N rows matched", "parsed N items", "the fill worked", "no data found", dedupe, backfill, enrichment, sampling a payload, diffing extracted records against a database, or evaluating a detector against ground truth. Description matching alone is unreliable for a gate that fires at the END of a task — pair this with a CLAUDE.md instruction in any repo that does extraction work.
+description: Pre-delivery gate for any claim derived from extracted, parsed, or ingested data. Load BEFORE reporting a count, rate, success percentage, match result, coverage figure, count of rows written, or a diff against a destination dataset; before binding an action (write, delete, retire, flag, fill) to a classifier's verdict; and before concluding that an extractor "works". "The extraction worked" is four separate claims — structural validity, measurement, coverage, and meaning — and passing one says nothing about the other three. Triggers on phrases like "X% success", "N rows matched", "parsed N items", "wrote N rows", "the fill worked", "no data found", dedupe, backfill, enrichment, sampling a payload, diffing extracted records against a database, or evaluating a detector against ground truth. Description matching alone is unreliable for a gate that fires at the END of a task — pair this with a CLAUDE.md instruction in any repo that does extraction work.
 ---
 
 # validate-extraction-output
@@ -30,6 +30,10 @@ Passing one is no evidence for the others.
 | **Meaning** | Do the values mean what the field name says? | provenance, time, identity |
 
 Most reporting collapses all four into one sentence. Separate them first.
+
+Two further things ride on the result and get reported as if they were part of
+it: the **action** bound to it (§E) and the **write** that stores it (§F).
+Neither is covered by any of the four.
 
 ---
 
@@ -148,7 +152,34 @@ output is right.** This is the most expensive item on the list.
 
 ---
 
-## F. Who is judging?
+## F. Storage — a reported write is not a landed write
+
+The same shape as §E: the analysis was checked and the thing done with it was
+not. A write path reports what it *sent*.
+
+- [ ] **A count of rows sent is not a count of rows changed.** Only a read
+      distinguishes them. An id matching no row is counted by a per-row loop and
+      not by the database. Read a sample back and report the verified number.
+- [ ] **Which writes recompute a derived column?** If the answer is "only
+      inserts", a rule change reaches records written afterwards and nothing
+      already stored — permanently, and with no error. An update that changes an
+      *input* to a derivation must name the derived columns too, or it leaves
+      them describing the old input.
+- [ ] **A backfill for a derived column plans a diff, not a rewrite**, so it is
+      idempotent, and reports *which values moved* rather than how many rows it
+      touched.
+- [ ] **A long write path fails in the layers nobody tests** — the diagnostic,
+      the transport, the post-write refresh — and each ends the run somewhere
+      unrelated to the mistake. A post-write refresh must never fail the run it
+      follows.
+
+> A vocabulary change was measured before running: it would have altered 0 of
+> 486 affected rows. The write path set the derived column on insert only, so
+> everything already stored kept the old rule, and nothing reported a problem.
+
+---
+
+## G. Who is judging?
 
 - [ ] **Did I use knowledge the pipeline does not have?** An agent reviewing
       extraction output brings outside knowledge, silently raising the apparent
@@ -159,7 +190,7 @@ output is right.** This is the most expensive item on the list.
 
 ---
 
-## G. Who actually failed?
+## H. Who actually failed?
 
 Before diagnosing *what* failed, classify *who*: pipeline, environment,
 terminal, or version control. A failure at the boundary of your environment
@@ -173,7 +204,7 @@ repository.
 
 ---
 
-## H. Report what was seen, not why
+## I. Report what was seen, not why
 
 State the observation. "parsed 0 items" — not "the source has no data".
 Guessing a cause once dressed up a parser looking in the wrong place entirely
@@ -203,8 +234,9 @@ skip. Pair the skill with a structural trigger in the project's `CLAUDE.md`:
 
 ```markdown
 **Before reporting any count, rate, match result, or coverage figure derived
-from data — and before binding a write, deletion or flag to a classifier's
-verdict — load the `validate-extraction-output` skill and work through it.**
+from data — including a count of rows written — and before binding a write,
+deletion or flag to a classifier's verdict, load the
+`validate-extraction-output` skill and work through it.**
 ```
 
 Then add two or three of the project's own concrete cases underneath, so the
@@ -218,9 +250,10 @@ a number?" — which is checkable at the point it matters.
 
 ## Boundary with neighbouring skills
 
-- **Verifying writes** — *did the write land*: rows sent versus rows changed,
-  derived columns that go stale because only inserts recompute them, transport
-  failures in a long write path. This skill covers *is the result true*. They
-  meet at server-side read truncation (§B), which corrupts a coverage claim.
 - **Polite external probing** — *may I fetch this, and at what rate*. That runs
   before extraction; this runs after.
+
+Write verification used to be listed here as a separate neighbour. It is §F
+instead, because it fires at the same moment this skill does — you are about to
+say a number — and a second gate at that moment competes with this one for the
+same attention rather than adding to it.
