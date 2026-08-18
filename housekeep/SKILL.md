@@ -456,7 +456,7 @@ The proposal is one row per finding:
 
 | entry | verdict | evidence | proposed edit |
 | --- | --- | --- | --- |
-| decision 12 | superseded | `core/x.py:88` now does Y | mark superseded by 33, add forward link |
+| decision N | superseded | `<file>:<line>` now does Y instead | mark superseded by decision M, add the forward link |
 
 Rules for the proposal:
 
