@@ -269,6 +269,10 @@ a number?" — which is checkable at the point it matters.
 - **`polite-external-probing`** — *may I fetch this, and at what rate*. That
   runs before the fetch; this runs after extraction. A run can satisfy one and
   fail the other in either direction.
+- **`first-real-run`** — *has this code ever met the real thing*. That fires
+  before execution, where this fires before a claim. The seam is diagnosis: §H
+  here classifies a failure you are reporting, and that skill says to reproduce
+  it before classifying anything.
 
 Write verification used to be listed here as a separate neighbour. It is §F
 instead, because it fires at the same moment this skill does — you are about to
