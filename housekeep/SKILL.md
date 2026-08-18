@@ -48,7 +48,7 @@ reader weighs them differently.
 
 ## The method
 
-Five steps, in this order, for every target.
+Six steps, in this order, for every target.
 
 ### 1. Read the record's own stated convention first
 
@@ -106,13 +106,51 @@ second. Reading end to end finds the contradictions the document already
 contains; only the code finds the ones it is missing, and those are the larger
 class.
 
-### 4. Build the cross-reference map as its own step
+**Verify against behaviour, never against a comment.** A code comment is a
+record too, and it is the one you will mistake for evidence: it sits next to the
+code, so a claim it confirms feels checked. It is not. A comment agreeing with a
+document is not corroboration — it is the same claim written twice, by someone
+who had the same picture. Read what the function *does*.
+
+This is not hypothetical, and both halves of it show up together. A run that
+found a diagram claiming "one request per row" also found the function's own
+docstring opening with the same words, twenty-six lines above the code that
+explains the batched call which replaced it. Either one alone reads as
+confirmation of the other.
+
+So when a comment turns out to be stale, **do not propose a more accurate
+comment.** The document is the source of truth; the comment should cite it and
+stop — `# five columns, null-only -- decision 44`. A comment that reproduces
+reasoning is a second copy that drifts, and it drifts unnoticed because a reader
+who finds it stops looking. What belongs in a comment is what is true of that
+function and nowhere else: a shape, a constraint it must satisfy, a trap in the
+call site.
+
+### 4. Ask what the record does not cover
+
+Every step so far checks whether what the record says is true. This one asks
+whether it says enough, and there is one gap worth checking by name.
+
+**Write permission is the half that goes unwritten.** Mechanics get documented
+because they are what you were thinking about while building them. The rules
+governing what a path may overwrite, what it may only propose, and what it must
+never be mistaken for are the expensive half, and they are the half that ends up
+implicit. So walk the write paths and ask, for each: does the record say what
+this may overwrite?
+
+A stated rule is also what makes the next drift *findable*. In the run this step
+came from, the record did state the rule — "only where null, and that is the one
+write that reaches this column" — and a second write path appeared four days
+later. The claim being written down is why it could be caught at all. Where no
+such rule is recorded, nothing can contradict anything.
+
+### 5. Build the cross-reference map as its own step
 
 Note which entry is cited by which later entry. An entry that later entries lean
 on, but which points forward to none of them, is where staleness accumulates —
 it is load-bearing and nothing has revisited it.
 
-### 5. Separate the three verdicts, and never conflate them
+### 6. Separate the three verdicts, and never conflate them
 
 | verdict | what it means | what to do |
 | --- | --- | --- |
