@@ -1,6 +1,6 @@
 ---
 name: housekeep
-description: Bring a project's records and code back into agreement. Two halves - `docs` audits written records (decisions, issues, observations, diagrams) and never touches source; `code` audits the source itself (structure, comments, guards) and can move modules and edit comments. Invoke as `housekeep <target>`, or `housekeep docs` / `housekeep code` / `housekeep all` to run a whole half. Default mode reads the session or branch diff and asks what it invalidated; --full extracts every checkable assertion and verifies it against current source. Always proposes before it writes. Load when asked to housekeep, tidy, audit, reconcile or update docs, a design-decision log, an ADR directory, an open-issues list, a TODO file, an observation log or a diagram; when deciding whether a package has earned a subfolder or reconciling a rename; when comments have drifted from what they describe; when asking whether the test suite really guards something; at the end of a session that changed behaviour; whenever a decision may have been superseded or an issue closed by the work just done.
+description: Bring a project's records and code back into agreement. Two halves - `docs` audits written records (decisions, issues, implementation plans, observations, diagrams) and never touches source; `code` audits the source itself (structure, comments, guards) and can move modules and edit comments. Invoke as `housekeep <target>`, or `housekeep docs` / `housekeep code` / `housekeep all` to run a whole half. Default mode reads the session or branch diff and asks what it invalidated; --full extracts every checkable assertion and verifies it against current source. Always proposes before it writes. Load when asked to housekeep, tidy, audit, reconcile or update docs, a design-decision log, an ADR directory, an open-issues list, a TODO file, an implementation plan, an observation log or a diagram; when a branch has finished part of a plan and the plan still lists it; when an MR or PR title and description no longer describe the branch; when deciding whether a package has earned a subfolder or reconciling a rename; when comments have drifted from what they describe; when asking whether the test suite really guards something; at the end of a session that changed behaviour; whenever a decision may have been superseded or an issue closed by the work just done.
 ---
 
 # housekeep
@@ -18,13 +18,17 @@ proposal.
 
 | half | targets | touches | worst case |
 | --- | --- | --- | --- |
-| `docs` | `decisions` `issues` `observations` `diagrams` | records only | a wrong sentence |
+| `docs` | `decisions` `issues` `plan` `observations` `diagrams` | records only | a wrong sentence |
 | `code` | `structure` `comments` `guards` | source files | a half-done rename |
 
 That is the whole reason for the split, and it is worth knowing before you run
 anything. A `docs` pass ends when the record agrees with the code. A `code` pass
 ends when **the code still runs**, which is a different and stronger claim, and
 which the test suite frequently cannot settle on its own.
+
+One `docs` target reaches further than the rest. `plan` can propose a new title
+and description for an MR, and an MR is outward-facing — an edit notifies every
+reviewer. It proposes the text; you apply it.
 
 ## Usage
 
@@ -232,6 +236,113 @@ rather than to close the issue.
 
 If ids are stable and never reused, do not reuse them. A gap in the sequence is
 information.
+
+## `docs plan`
+
+An implementation plan is a worklist, not a record. Its value is the part that
+is not done yet. A completed step left on the list costs every later reader the
+time to work out that it is finished, and it costs the next plan-driven session
+the same time again.
+
+So this target has one output: **the plan holds only the undone work.**
+
+### Take the evidence from the branch, not from the session
+
+| source | what it settles | how far to trust it |
+| --- | --- | --- |
+| the branch diff against the merge base | what the code does now | the fact |
+| the commit messages on the branch | what the author meant to do | intent, not proof |
+| this session's context | what was tried | the weakest of the three |
+
+Get the diff from git rather than from memory —
+`git diff --name-status <merge-base>...HEAD`, and read the hunks that matter.
+
+**Do not mark a step done from the session context alone.** A session holds the
+approach that was replaced, the work that was reverted, and the change that was
+described and never written. The diff holds none of those. Where the session
+says a step is done and the diff does not show it, the step is not done, and the
+gap is itself a finding.
+
+### Four verdicts per step
+
+| verdict | the test | what to do |
+| --- | --- | --- |
+| **done** | the thing the step asked for works, and the diff shows it | remove the step |
+| **advanced** | part of it shipped | rewrite the step to state what is left |
+| **superseded** | the branch solved it another way | remove it, and name the decision that replaced it |
+| **untouched** | no work reached it | leave it exactly as it stands |
+
+**Done means the behaviour exists, not that a name exists.** A function called
+`validate_rows` does not close the step "validate the rows". Step 3 of the
+method applies here without change: check the assertion against what the code
+does, never against a comment or a commit subject.
+
+**Advanced is the verdict that goes wrong.** A step half shipped, rewritten as
+though it were untouched, sends the next reader to re-diagnose work that is
+already half done. Rewrite it to state the remainder. This is the same rule as
+`docs issues`, and for the same reason.
+
+### Before you remove a step, check what it carries
+
+`housekeep` never deletes reasoning, and this is the one target that deletes on
+purpose, so the rule needs care here.
+
+Most steps are instructions and carry nothing. Some carry a why — a rejected
+alternative, a constraint, an order that matters. If that reasoning exists
+nowhere else, move it first, into the decisions record or into the MR
+description, and then remove the step. A plan is allowed to lose its finished
+instructions. It is not allowed to be the last copy of a reason.
+
+### Look for the work the plan never asked for
+
+A pass that only removes steps measures in one direction. Walk the diff the
+other way: for each change on the branch, find the step that asked for it. What
+has no step is one of two things, and they need different fixes.
+
+* **Scope that grew.** The work belongs, and the plan never recorded it. Add the
+  step, marked done, or record it in the decisions log — whichever the project's
+  convention says. A plan that omits half the branch will under-state the next
+  estimate.
+* **Work that does not belong here.** Say so plainly and let the user decide
+  whether it splits out.
+
+### An empty plan is a finding, not an empty file
+
+If every step goes, the plan is finished. Propose what the project's convention
+says to do with a finished plan — archive it, delete it, close the item that
+holds it. Do not leave a file of headings with nothing under them. That reads
+like a plan that lost its content.
+
+### If there is an MR, it is the second copy of the plan
+
+An MR (a merge request; a pull request on GitHub is the same thing) carries a
+title and a description. Both are claims about what the branch does. Both are
+written when the branch opens, which is before most of the work exists, so both
+drift the same way the plan does — and they drift where other people read them.
+
+Check three things against the diff you already have:
+
+1. **Every claim in the description happened.** A bullet describing work that
+   was later dropped is the common failure. It survives because nobody rereads
+   the description after they write it.
+2. **Every change on the branch appears in the description.** What the
+   description omits is what the reviewer does not know to look at. This half is
+   skipped more often than the first.
+3. **The title still states the scope.** If the branch grew a second concern,
+   either the title widens or the work splits into two MRs. Propose one, and say
+   which.
+
+A description that holds its own checklist gets the same four verdicts as the
+plan. A description that still says "WIP" while the branch is complete is a
+finding on its own.
+
+**Warning: an MR edit notifies every reviewer. Propose the new title and the
+new description as full text, and let the user apply them.** Three things stay
+out of scope, whatever the diff says:
+
+* never rewrite a comment that a reviewer wrote
+* never resolve or dismiss a review thread
+* never edit an MR opened by somebody else
 
 ## `docs observations`
 
@@ -475,7 +586,8 @@ Rules for the proposal:
 ## What housekeep never does
 
 * **Never delete reasoning.** Superseded reasoning explains the current design.
-  Move it, mark it, link it — do not remove it.
+  Move it, mark it, link it — do not remove it. `docs plan` is the one target
+  that removes an entry on purpose, and it moves the reasoning out first.
 * **Never invent a decision to justify code.** If code contradicts a decision,
   that may be a bug in the code. Report the contradiction; let the user choose
   which side moves.
@@ -501,7 +613,8 @@ A few lines in the repo's `CLAUDE.md` save a discovery pass every run:
 
 ```
 `housekeep docs` maintains: docs/design-decisions.md (decisions),
-docs/open-issues.md (issues), docs/diagrams/ (diagrams). Each states its own
+docs/open-issues.md (issues), docs/implementation-plan.md (plan),
+docs/diagrams/ (diagrams). Each states its own
 maintenance convention at the top; follow it rather than inventing one.
 Guards that already cover the mechanical half: <name them here>.
 The suite going green is not evidence that a moved command still runs.
@@ -545,3 +658,8 @@ the damage lives.
 **`code comments`** is a preference one project stated after a pass found two
 comments restating documents they had drifted from, each reading as
 corroboration of the document it contradicted.
+
+**`docs plan`** did not come from an incident. A user asked for it. Its verdicts
+are the `issues` outcomes with a fourth added, because a plan step and an open
+issue go stale the same way: the work lands, and the sentence that asked for it
+stays.
