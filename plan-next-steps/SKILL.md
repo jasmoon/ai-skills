@@ -41,6 +41,18 @@ Identify concerns about the current design or approach, if applicable. Rank them
 
 These may include: scalability risks, coupling issues, unclear ownership, missing error handling, UX friction, accessibility gaps, security surface, maintainability debt, etc.
 
+**One concern class is worth checking by hand every time: a rule the work makes
+conditional on an existing mechanism.** "Gated by X", "validated by X", "the
+same threshold as Y" — the phrasing borrows the mechanism's authority without
+borrowing its domain, and the sentence reads as complete either way. Read the
+mechanism's signature, enumerate the cases the new rule spans, and for each one
+say which argument is missing or which branch applies. A rule was once made
+conditional on a function comparing an existing record against an incoming one;
+for a brand-new entity there is no existing record, so the condition was
+unstatable across a third of the cases it claimed to cover, and only a reader's
+question exposed it. Cases where the mechanism cannot run need their own rule,
+not silent inheritance of its name.
+
 ### 4. Top Questions About the Work (up to 6, ranked by importance)
 Identify open questions about the work that should be answered to move forward effectively. These are questions for the user or team to consider — things that are unresolved, ambiguous, or worth discussing.
 

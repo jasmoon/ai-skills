@@ -32,6 +32,20 @@ patterns worth capturing, while the skill-creator is the hands that build.
 The methodology is user-agnostic. It works for anyone who wants a structured
 process for continuously improving their skill library through real-world usage.
 
+> **Modified from the original (2026-08-16).** Licensed CC BY 4.0, which
+> requires changes to be indicated. Two fixes, both found by running the skill
+> for seven weeks and auditing what it missed:
+>
+> 1. *Session Start Protocol, step 3* — an unparseable `last-review-date.txt`
+>    now counts as overdue. Previously the trigger tested only "file missing"
+>    and "date older than 7 days", so a file holding a non-date matched neither
+>    and no review could ever fire. Observed: a placeholder value sat there for
+>    seven weeks and 38 observations accumulated unreviewed.
+> 2. *Self-Enforcement, check 6* — the client-identifying-information check now
+>    covers every field, not just `Principle`. `Principle` is the shortest and
+>    most abstract field; identifying detail collects in `Issue`, which names
+>    the actual systems.
+
 **Licence:** This skill is released under the [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) licence. You are free to share and adapt this skill for any purpose, provided
 you give appropriate credit to the original author.
 
@@ -164,8 +178,12 @@ feedback and reflective conversations, not just during active tool use?
 4. Is each observation tagged with the correct type (open-source or internal)?
 5. For observations about existing skills, does the suggested improvement
 reference the specific section or rule?
-6. For any observation tagged `type: open-source`, does the Principle field
-contain client-identifying information? If so, generalise it before surfacing.
+6. For any observation tagged `type: open-source`, does **any field** contain
+client-identifying information — Issue, Suggested improvement, Session context
+and Principle alike? Check `Issue` hardest: it is the longest and most concrete
+field, so it is where system names, table names, platforms and places actually
+collect, while `Principle` is abstract by construction and rarely carries them.
+Generalise before surfacing.
 
 If any observation fails these checks, fix it before surfacing.
 
@@ -720,10 +738,13 @@ principles file don't exist, create them using the templates in this skill.
 Don't surface them unprompted unless directly relevant — hold in awareness.
 
 3. **Check the weekly review trigger.** Read the timestamp in
-`[workspace folder]/skill-observations/last-review-date.txt`. If the file
-doesn't exist or the date is more than 7 days ago, trigger the Comprehensive
-Review before proceeding. In web chat (no filesystem), check the handoff doc
-for the last review date.
+`[workspace folder]/skill-observations/last-review-date.txt`. The file holds
+one ISO date (`YYYY-MM-DD`) and nothing else. Trigger the Comprehensive Review
+before proceeding if the file doesn't exist, if the date is more than 7 days
+ago, **or if the contents do not parse as a date** — an unparseable value is
+overdue, not absent. Treating it as absent is how a placeholder left in that
+file disables reviews indefinitely with no error. In web chat (no filesystem),
+check the handoff doc for the last review date.
 
 4. **Check the configuration file.** Run the config detection described in
 Recommended Activation Setup. Runs once per session.
