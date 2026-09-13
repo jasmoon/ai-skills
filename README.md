@@ -6,12 +6,13 @@ Skills for Claude Code, and the global instructions that I recommend with them.
 | --- | --- |
 | `CLAUDE.global.md` | Ground rules and writing rules to copy into your own setup |
 | `check-global-subset.sh` | A check that keeps that file honest |
-| One directory per skill | Six skills, listed below |
+| One directory per skill | Seven skills, listed below |
 
 ## The skills
 
 | Skill | When it fires |
 | --- | --- |
+| `diary` | When you want to keep a thought: an idiom, an observation, an idea for a chapter, a quote, a question. Also to search the store, or to review a week, a month or a year. |
 | `first-real-run` | Before code meets real data or a live system for the first time. Also the first move when a run returns nothing, or the wrong shape. |
 | `housekeep` | When the records and the code disagree. `docs` audits written records. `code` audits the source. |
 | `plan-next-steps` | When you want the design decisions, the concerns and the open questions on the current work. It asks you questions first. |
