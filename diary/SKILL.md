@@ -1,6 +1,6 @@
 ---
 name: diary
-description: A personal diary in plain Markdown files that you keep for years. Invoke as `diary <what you want to keep>` to add an entry, `diary find <text>` to search, `diary recent [n]` to list the last entries, and `diary review <period>` to get a digest of a week, a month or a year. The store is one Markdown file per month in a directory that you choose, so grep, git and any editor still work on it. Load when asked to keep, note, log, capture, jot, record or save a thought; for an idiom, a phrase, a word, a turn of speech, a quote, an observation about people or society, an idea for a book chapter, a project or an essay, a question to answer later; and when asked what you wrote about a topic, what you kept last week, or for a look back over a month or a year of entries.
+description: A personal diary in plain Markdown files that you keep for years, and that works inside an Obsidian vault. Invoke as `diary <what you want to keep>` to add an entry, `diary find <text>` to search, `diary recent [n]` to list the last entries, and `diary review <period>` to get a digest of a week, a month or a year. The store is one Markdown file per month plus a `tags.md` that holds the vocabulary, so grep, git, Obsidian and any editor still work on it. Load when asked to keep, note, log, capture, jot, record or save a thought; for an idiom, a phrase, a word, a turn of speech, a quote, an observation about people or society, an idea for a book chapter, a project or an essay, a question to answer later; and when asked what you wrote about a topic, what you kept last week, or for a look back over a month or a year of entries.
 ---
 
 # diary
@@ -19,47 +19,34 @@ The store is therefore boring on purpose:
 - No database, no index, no lock file, no sync.
 
 The skill adds the discipline that a plain directory does not have: one entry
-shape, one date format, one small list of types. That is what makes the store
-searchable later.
+shape, one date format, and one vocabulary file that stops the tags from
+drifting. That discipline is what makes the store searchable in year three.
 
 ## The store
 
-### The config file
-
-The skill reads `~/.diary/config.json`:
-
-```json
-{
-  "diary_dir": "/home/you/diary",
-  "types": ["idiom", "observation", "idea", "quote", "question", "note"]
-}
+```
+~/.diary/path              one line: the absolute path of <diary_dir>
+<diary_dir>/tags.md        the vocabulary: the types and the tags
+<diary_dir>/2026-08.md     the entries of August
+<diary_dir>/2026-09.md     the entries of September
 ```
 
-| key | meaning |
-| --- | --- |
-| `diary_dir` | The absolute path of the directory that holds the month files. Write an absolute path. Do not write `~`. |
-| `types` | The list of entry types. The user edits this list. The skill never adds a type on its own. |
+Read the path with `DIARY="$(cat ~/.diary/path)"`. If the file is absent, run
+the first-run steps in section E. Do not guess a path, and do not write an entry
+to a default location.
 
-If the config file is absent, run the first-run steps in section E. Do not guess
-a path, and do not write an entry to a default location.
+The month file name is `YYYY-MM.md`. The first line of a new month file is
+`# YYYY-MM`. Entries go in at the bottom, so the file reads oldest first.
 
-### The layout
-
-```
-<diary_dir>/
-  2026-08.md
-  2026-09.md
-  2026-10.md
-```
-
-One file per month. The file name is `YYYY-MM.md`. The first line of a new file
-is `# YYYY-MM`. Entries go in at the bottom, so the file reads oldest first.
+Warning: every command in this skill globs `"$DIARY"/[0-9]*.md`, never
+`"$DIARY"/*.md`. The `[0-9]` keeps `tags.md` out of the entry search. A search
+that reads `tags.md` reports the vocabulary as if it were an entry.
 
 ### The entry
 
 ```markdown
-## 2026-09-13 14:22 [idiom] Pour cold water on
-tags: language, work
+## 2026-09-13 14:22 Pour cold water on
+tags: #type/idiom #language #work
 source: a colleague in the standup
 
 To discourage an idea or a plan.
@@ -69,29 +56,29 @@ To discourage an idea or a plan.
 
 | line | rule |
 | --- | --- |
-| the heading | `## YYYY-MM-DD HH:MM [type] Title`. One line. Keep the title under 60 characters. |
-| `tags:` | Always present. Lower case, comma separated. Write `tags: -` when there is no tag. |
+| the heading | `## YYYY-MM-DD HH:MM Title`. One line. Keep the title under 60 characters. Use no `[`, `]`, `#`, `|` or `^`, so that an Obsidian link to the entry holds. |
+| `tags:` | Always present. The type tag comes first, then the other tags. Lower case, one space between them, each with a `#`. |
 | `source:` | Optional. Where the thought came from: a person, a book, a place, a moment. |
 | `link:` | Optional. One URL. |
-| the body | Free Markdown, after one blank line. |
+| the body | Free Markdown, after one blank line. An Obsidian `[[link]]` is welcome here. |
 
-The heading line is the index of the whole store. Every search starts there, so
-write a title that you recognise later. `Pour cold water on` is a good title.
-`An idiom I heard` is not.
+The heading and the `tags:` line together are the index of the whole store.
+Every search reads those two lines first, so write a title that you recognise
+later. `Pour cold water on` is a good title. `An idiom I heard` is not.
 
-### The types
+### The vocabulary
 
-| type | what it holds |
-| --- | --- |
-| `idiom` | A phrase, an idiom, a word or a turn of speech. Give the meaning and one example of use. |
-| `observation` | Something that you noticed about people, society, work or a system. |
-| `idea` | Something that you want to build, write or try. A chapter of a book is an idea. |
-| `quote` | The words of another person. Name the person. |
-| `question` | Something that you want to answer later. |
-| `note` | Anything that fits no other type. |
+`tags.md` holds every type and every tag that this diary uses. Read it before
+you write an entry.
 
-Pick exactly one type. If two types fit, pick the one that the user leads with,
-and put the second one in the tags.
+- Every entry has exactly one `#type/...` tag.
+- Every other tag must already be in `tags.md`.
+- **Never invent a tag.** When no tag in the file fits, propose a new one and
+  say what it means. Add it to `tags.md` only after the user agrees, in the
+  same session.
+
+This rule exists because tags drift. Month nine gives you `#society`,
+`#societal` and `#people` for one idea, and then no search finds all three.
 
 ---
 
@@ -102,29 +89,29 @@ and put the second one in the tags.
 1. **Get the date from the clock.** Run `date +'%Y-%m-%d %H:%M'` and use that
    output. Never write a date from memory. Never write a date that you inferred
    from the conversation.
-2. **Pick the type** from the `types` list in the config. Ask only when two
-   types are equally right and the user gave you no lead.
-3. **Write the title.** Take the words of the user. Do not invent a clever
+2. **Read `tags.md`.** You need the type list and the tag list.
+3. **Pick the type.** Ask only when two types are equally right and the user
+   gave you no lead. If two fit, the second one is not a type. Drop it.
+4. **Write the title.** Take the words of the user. Do not invent a clever
    title.
-4. **Write the body.** Keep the words of the user. Fix a typo and add the
+5. **Write the body.** Keep the words of the user. Fix a typo and add the
    punctuation. Do not expand a short note into a paragraph.
-5. **Fill the type template** below.
-6. **Add tags.** Two or three, lower case. Reuse a tag that the store already
-   holds: `grep -h '^tags:' "$DIARY"/*.md | sort | uniq -c | sort -rn | head -30`.
-   A new tag for every entry makes the tags useless.
-7. **Append the entry** with the command in "How to write the file".
-8. **Report the file and the title.** Show the entry that you wrote.
+6. **Fill what the type needs**, from the table below.
+7. **Pick two or three tags from `tags.md`.** Propose a new tag only when none
+   fits, and wait for the user to agree.
+8. **Append the entry** with the command in "How to write the file".
+9. **Report the file and the title.** Show the entry that you wrote.
 
 ### What each type needs
 
 | type | the entry is not complete without |
 | --- | --- |
-| `idiom` | The meaning in one sentence, and one example of use. |
-| `observation` | The thing that you saw. Keep the observation and your reading of it in separate paragraphs. |
-| `idea` | One sentence that says what the idea is. Then the detail. For a chapter, name the book in the tags. |
-| `quote` | The exact words, and the person who said them. |
-| `question` | The question as a question. Add what makes it hard. |
-| `note` | Nothing more. |
+| `#type/idiom` | The meaning in one sentence, and one example of use. |
+| `#type/observation` | The thing that you saw. Keep the observation and your reading of it in separate paragraphs. |
+| `#type/idea` | One sentence that says what the idea is. Then the detail. For a chapter, tag the book. |
+| `#type/quote` | The exact words, and the person who said them. |
+| `#type/question` | The question as a question. Add what makes it hard. |
+| `#type/note` | Nothing more. |
 
 **Ask, do not fill a gap.** If the user gives an idiom and no meaning, ask for
 the meaning in one short question. Do not write a meaning that you inferred. A
@@ -136,14 +123,14 @@ Warning: a wrong redirect operator destroys a month of entries. Use `>>`, never
 `>`, on a month file.
 
 ```sh
-DIARY="$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.diary/config.json")))["diary_dir"])')"
+DIARY="$(cat ~/.diary/path)"
 MONTH="$(date +%Y-%m)"
 FILE="$DIARY/$MONTH.md"
 [ -f "$FILE" ] || printf '# %s\n' "$MONTH" > "$FILE"
 cat >> "$FILE" <<'DIARY_ENTRY_EOF'
 
-## 2026-09-13 14:22 [idiom] Pour cold water on
-tags: language, work
+## 2026-09-13 14:22 Pour cold water on
+tags: #type/idiom #language #work
 
 To discourage an idea or a plan.
 DIARY_ENTRY_EOF
@@ -156,12 +143,6 @@ Three details in that command carry the weight:
 - The blank line at the top of the heredoc separates this entry from the one
   before it.
 - The `[ -f ... ]` test creates the month file with its header, one time.
-
-On a machine with no `python3`, read the path with `sed` instead:
-
-```sh
-DIARY="$(sed -n 's/.*"diary_dir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' ~/.diary/config.json)"
-```
 
 Before you append, check the body for a line that starts with `## `. Change it
 to `### `. A `## ` line in a body splits the entry in two for every reader and
@@ -179,27 +160,31 @@ exists. See the rules in section F.
 
 `diary find <text>`
 
-Search the headings first. They hold the date, the type and the title, so one
-line of output identifies an entry.
+Search the heading and the tags first. Those two lines identify an entry.
 
 ```sh
-# every entry, newest last
-grep -h '^## ' "$DIARY"/*.md
+DIARY="$(cat ~/.diary/path)"
+
+# every entry: the heading and its tags, oldest first
+grep -h -A1 '^## ' "$DIARY"/[0-9]*.md | grep -v '^--$'
 
 # every idiom
-grep -n '^## .*\[idiom\]' "$DIARY"/*.md
+grep -h -B1 '^tags:.*#type/idiom' "$DIARY"/[0-9]*.md | grep '^## '
 
 # every entry with a tag
-grep -n '^tags:.*society' "$DIARY"/*.md
+grep -h -B1 '^tags:.*#society' "$DIARY"/[0-9]*.md | grep '^## '
 
-# a word in a title
-grep -in '^## .*water' "$DIARY"/*.md
+# a word in a title, with the file and the line
+grep -in '^## .*water' "$DIARY"/[0-9]*.md
+
+# which tags this diary really uses, and how much
+grep -ho '#[a-z][a-z0-9/-]*' "$DIARY"/[0-9]*.md | sort | uniq -c | sort -rn
 ```
 
 When the text can sit in a body, print the whole entry that holds it:
 
 ```sh
-for f in "$DIARY"/*.md; do
+for f in "$DIARY"/[0-9]*.md; do
   awk -v pat="pour cold water" -v f="$f" '
     /^## / { if (hit && ln) printf "%s:%d\n%s\n", f, ln, blk; blk = ""; hit = 0; ln = FNR }
              { blk = blk $0 "\n"; if (index(tolower($0), pat)) hit = 1 }
@@ -223,12 +208,13 @@ the session.
 `diary recent [n]`
 
 ```sh
-grep -h '^## ' "$DIARY"/*.md | tail -20
+DIARY="$(cat ~/.diary/path)"
+grep -h -A1 '^## ' "$DIARY"/[0-9]*.md | grep -v '^--$' | tail -40
 ```
 
-The file names sort by name into date order, so the last line is the last entry.
-`n` defaults to 20. For a period instead of a count, name the month files:
-`grep -h '^## ' "$DIARY"/2026-09.md`.
+Each entry is two lines of output, so `tail -40` gives 20 entries. `n` defaults
+to 20. The file names sort by name into date order, so the last entry is last.
+For one month, name the file: `grep -h -A1 '^## ' "$DIARY"/2026-09.md`.
 
 ---
 
@@ -246,10 +232,17 @@ Read every entry in the period. Then write the digest:
    a review, because a thought that returns is a thought that matters.
 4. **Worth development.** The entries that are ready to become something: an
    essay, a chapter, a talk. Say what each one needs next.
-5. **Open questions.** Every `question` entry in the period that no later entry
-   answers.
+5. **Open questions.** Every `#type/question` entry in the period that no later
+   entry answers.
 6. **Thin entries.** An entry that you cannot understand now. Name it, so that
    the user fixes it while the memory is fresh.
+
+Then ask one question: **keep this digest as an entry?**
+
+- Write it only after the user says yes.
+- Write it through section A, with `tags: #type/note #review`.
+- Title it `Review of <period>`.
+- If the user says no, write nothing. The digest stays in the chat.
 
 Rules for a review:
 
@@ -257,38 +250,62 @@ Rules for a review:
 - Never invent an entry, a date or a tag.
 - Never merge two entries into one claim.
 - Say how many entries you read, and which month files you read.
-- A review writes nothing to the store. If the user wants the digest kept, add
-  it as one `note` entry through section A.
+- A review changes no entry that exists.
 
 ---
 
 ## E. First run
 
-The config file is absent. Do this:
+`~/.diary/path` is absent. Do this:
 
 1. Tell the user that the skill needs a directory for the diary.
-2. Propose `~/diary`. Ask for a different path if they want one.
+2. Propose `~/diary`. Ask for a different path if they want one. If they keep
+   an Obsidian vault, propose a directory inside that vault.
 3. **Wait for the answer.** Do not choose a path for the user.
-4. Create the directory and write the config:
+4. Create the directory, write the path file, and seed the vocabulary:
 
 ```sh
+CHOSEN_DIR="/absolute/path/here"
 mkdir -p ~/.diary "$CHOSEN_DIR"
-cat > ~/.diary/config.json <<'CONFIG_EOF'
-{
-  "diary_dir": "/absolute/path/here",
-  "types": ["idiom", "observation", "idea", "quote", "question", "note"]
-}
-CONFIG_EOF
+printf '%s\n' "$CHOSEN_DIR" > ~/.diary/path
+cat > "$CHOSEN_DIR/tags.md" <<'TAGS_EOF'
+# Tags
+
+The vocabulary of this diary. The `diary` skill reads this file before it writes
+an entry. It uses a tag from this file, and it asks you before it adds a new one.
+
+## Types
+
+Every entry carries exactly one type tag.
+
+| tag | what the entry holds |
+| --- | --- |
+| `#type/idiom` | A phrase, an idiom, a word or a turn of speech. |
+| `#type/observation` | Something you noticed about people, society, work or a system. |
+| `#type/idea` | Something you want to build, write or try. A chapter of a book is an idea. |
+| `#type/quote` | The words of another person. |
+| `#type/question` | Something you want to answer later. |
+| `#type/note` | Anything that fits no other type. |
+
+## Tags
+
+| tag | meaning |
+| --- | --- |
+| `#review` | The digest of a review of a period, kept as an entry. |
+
+Add a tag here before you use it. Keep the list short. A tag that names one
+entry is not a tag.
+TAGS_EOF
 ```
 
-5. Show the config to the user. Tell them that the `types` list is theirs to
-   edit.
+5. Show `tags.md` to the user. Tell them that the file is theirs to edit, and
+   that a tag outside it does not get used.
 6. Then write the entry that they asked for.
 
-If `diary_dir` in the config names a directory that does not exist, stop. Report
-the path. Do not create it, and do not fall back to another path. A missing
-directory usually means an unmounted disk, and a fallback writes the entry
-where the user never looks for it.
+If `~/.diary/path` names a directory that does not exist, stop. Report the path.
+Do not create it, and do not fall back to another path. A missing directory
+usually means an unmounted disk, and a fallback writes the entry where the user
+never looks for it.
 
 ---
 
@@ -301,14 +318,15 @@ The diary holds years of work that exists in one copy. Treat it as such.
 - **Never delete an entry.** The user deletes an entry in their editor.
 - **One exception:** the entry that this session appended, when the user asks
   you to fix it. Change that entry alone.
-- **Never write outside `diary_dir`.**
+- **Never write outside `<diary_dir>`.**
 - **Never touch a month file other than the current one** in an add.
-- **Do not commit the diary to git**, and do not run `git` in `diary_dir`,
+- **Change `tags.md` only when the user agrees to a new tag**, in that session.
+- **Do not commit the diary to git**, and do not run `git` in `<diary_dir>`,
   unless the user asks in that session.
 - **The diary is private.** Do not put an entry, or a part of one, into a web
   search, an API call, a commit message or any other place outside
-  `diary_dir`.
-- **Do not read the whole store** for an add. An add needs the tag list and the
+  `<diary_dir>`.
+- **Do not read the whole store** for an add. An add needs `tags.md` and the
   current month file.
 
 ## Not in scope
@@ -321,6 +339,19 @@ The skill does not do these, on purpose. Ask before you build one.
 - An edit of an old entry.
 - Analysis of an entry at add time. The skill keeps what you said. `review`
   is where interpretation happens, and only when you ask for it.
+
+## Use it in an Obsidian vault
+
+Put `<diary_dir>` inside the vault. Then:
+
+- The tag pane shows a `type` tree, because `#type/idiom` is a nested tag.
+- Every other tag appears there too, and `tags.md` documents what each one
+  means.
+- The body of an entry takes a `[[link]]` to any note in the vault.
+- A link to one entry is `[[2026-09#2026-09-13 14:22 Pour cold water on]]`.
+  This is why the heading holds no `[`, `]`, `#`, `|` or `^`. I did not verify
+  which of those characters Obsidian rejects in a heading link. The heading
+  format avoids all five.
 
 ## Recommended activation setup
 
