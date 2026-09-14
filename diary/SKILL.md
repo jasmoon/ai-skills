@@ -25,15 +25,47 @@ drifting. That discipline is what makes the store searchable in year three.
 ## The store
 
 ```
-~/.diary/path              one line: the absolute path of <diary_dir>
+~/.diary/config.json       the settings of the skill
 <diary_dir>/tags.md        the vocabulary: the types and the tags
 <diary_dir>/2026-08.md     the entries of August
 <diary_dir>/2026-09.md     the entries of September
 ```
 
-Read the path with `DIARY="$(cat ~/.diary/path)"`. If the file is absent, run
-the first-run steps in section E. Do not guess a path, and do not write an entry
-to a default location.
+### The config file
+
+```json
+{
+  "diary_dir": "/home/you/diary"
+}
+```
+
+| key | required | meaning |
+| --- | --- | --- |
+| `diary_dir` | yes | The absolute path of the directory that holds the entries. Write an absolute path. Do not write `~`. |
+
+Read it like this:
+
+```sh
+DIARY="$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.diary/config.json")))["diary_dir"])')"
+```
+
+On a machine with no `python3`, read the path with `sed` instead:
+
+```sh
+DIARY="$(sed -n 's/.*"diary_dir"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' ~/.diary/config.json)"
+```
+
+The `sed` reader stops at the first `"`. A path that holds a `"` or a `\`
+therefore reads back wrong. Use the `python3` reader on such a path.
+
+Three rules for the config file:
+
+- If the file is absent, run the first-run steps in section E. Do not guess a
+  path, and do not write an entry to a default location.
+- If `diary_dir` is absent from the file, stop and report it. Do not add the
+  key on your own.
+- Ignore a key that you do not know. The user owns this file. Never rewrite it
+  to add a key, and never reformat it.
 
 The month file name is `YYYY-MM.md`. The first line of a new month file is
 `# YYYY-MM`. Entries go in at the bottom, so the file reads oldest first.
@@ -123,7 +155,7 @@ Warning: a wrong redirect operator destroys a month of entries. Use `>>`, never
 `>`, on a month file.
 
 ```sh
-DIARY="$(cat ~/.diary/path)"
+DIARY="$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.diary/config.json")))["diary_dir"])')"
 MONTH="$(date +%Y-%m)"
 FILE="$DIARY/$MONTH.md"
 [ -f "$FILE" ] || printf '# %s\n' "$MONTH" > "$FILE"
@@ -163,7 +195,7 @@ exists. See the rules in section F.
 Search the heading and the tags first. Those two lines identify an entry.
 
 ```sh
-DIARY="$(cat ~/.diary/path)"
+DIARY="$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.diary/config.json")))["diary_dir"])')"
 
 # every entry: the heading and its tags, oldest first
 grep -h -A1 '^## ' "$DIARY"/[0-9]*.md | grep -v '^--$'
@@ -208,7 +240,7 @@ the session.
 `diary recent [n]`
 
 ```sh
-DIARY="$(cat ~/.diary/path)"
+DIARY="$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.diary/config.json")))["diary_dir"])')"
 grep -h -A1 '^## ' "$DIARY"/[0-9]*.md | grep -v '^--$' | tail -40
 ```
 
@@ -256,7 +288,7 @@ Rules for a review:
 
 ## E. First run
 
-`~/.diary/path` is absent. Do this:
+`~/.diary/config.json` is absent. Do this:
 
 1. Tell the user that the skill needs a directory for the diary.
 2. Propose `~/diary`. Ask for a different path if they want one. If they keep
@@ -267,7 +299,11 @@ Rules for a review:
 ```sh
 CHOSEN_DIR="/absolute/path/here"
 mkdir -p ~/.diary "$CHOSEN_DIR"
-printf '%s\n' "$CHOSEN_DIR" > ~/.diary/path
+cat > ~/.diary/config.json <<CONFIG_EOF
+{
+  "diary_dir": "$CHOSEN_DIR"
+}
+CONFIG_EOF
 cat > "$CHOSEN_DIR/tags.md" <<'TAGS_EOF'
 # Tags
 
@@ -298,11 +334,15 @@ entry is not a tag.
 TAGS_EOF
 ```
 
-5. Show `tags.md` to the user. Tell them that the file is theirs to edit, and
+The delimiter `CONFIG_EOF` carries no quotes, so the shell expands
+`$CHOSEN_DIR` into the file. This is the one heredoc in this skill that wants
+expansion. The heredoc that writes an entry always keeps its quotes.
+
+5. Show the config file and `tags.md` to the user. Tell them that the file is theirs to edit, and
    that a tag outside it does not get used.
 6. Then write the entry that they asked for.
 
-If `~/.diary/path` names a directory that does not exist, stop. Report the path.
+If `diary_dir` names a directory that does not exist, stop. Report the path.
 Do not create it, and do not fall back to another path. A missing directory
 usually means an unmounted disk, and a fallback writes the entry where the user
 never looks for it.
