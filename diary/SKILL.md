@@ -132,7 +132,9 @@ This rule exists because tags drift. Month nine gives you `#society`,
 7. **Pick two or three tags from `tags.md`.** Propose a new tag only when none
    fits, and wait for the user to agree.
 8. **Append the entry** with the command in "How to write the file".
-9. **Report the file and the title.** Show the entry that you wrote.
+9. **Commit it**, under the rules in section F. Skip this step in silence when
+   `<diary_dir>` is not a git repo.
+10. **Report the file and the title.** Show the entry that you wrote.
 
 ### What each type needs
 
@@ -184,7 +186,7 @@ every search.
 
 The user can say "fix that" after an add. Edit the entry that this session
 appended, in place. This is the one time that the skill changes an entry that
-exists. See the rules in section F.
+exists. See the rules in section G.
 
 ---
 
@@ -338,7 +340,15 @@ The delimiter `CONFIG_EOF` carries no quotes, so the shell expands
 `$CHOSEN_DIR` into the file. This is the one heredoc in this skill that wants
 expansion. The heredoc that writes an entry always keeps its quotes.
 
-5. Show the config file and `tags.md` to the user. Tell them that the file is theirs to edit, and
+5. Offer a local git repo, with the words in section F. On a yes:
+
+```sh
+git -C "$CHOSEN_DIR" init -q
+git -C "$CHOSEN_DIR" add -- tags.md
+git -C "$CHOSEN_DIR" commit -q -m "diary: start the store"
+```
+
+6. Show the config file and `tags.md` to the user. Tell them that the file is theirs to edit, and
    that a tag outside it does not get used.
 6. Then write the entry that they asked for.
 
@@ -349,7 +359,100 @@ never looks for it.
 
 ---
 
-## F. The rules that keep the store safe
+## F. The local git repo
+
+A diary has one copy and no undo. A local git repo gives you both, and it adds
+no exposure, because it has no remote.
+
+**The skill commits to a local repo. The skill never pushes.** The difference is
+the whole point: the value comes from the history, and every risk comes from the
+remote.
+
+### When the skill commits
+
+After each write: an entry, a change to `tags.md`, a review digest that the user
+kept. Before it commits, it tests three things. All three must hold.
+
+| test | why |
+| --- | --- |
+| `git` is installed and `<diary_dir>` is a repo | No repo means the user did not ask for this. |
+| the top level of that repo **is** `<diary_dir>` | A repo above it is the vault repo. A commit there sweeps in files that are not the diary. |
+| the repo has **no remote** | A remote means the diary leaves the machine. |
+
+Run this after the append. It does all three tests, and it reports each refusal:
+
+```sh
+if ! command -v git >/dev/null 2>&1; then
+  echo "no git: nothing committed"
+elif ! TOP="$(git -C "$DIARY" rev-parse --show-toplevel 2>/dev/null)"; then
+  echo "not a git repo: nothing committed"
+elif [ "$TOP" != "$(cd "$DIARY" && pwd -P)" ]; then
+  echo "the repo is $TOP, above the diary: nothing committed"
+elif [ -n "$(git -C "$DIARY" remote)" ]; then
+  echo "the repo has a remote ($(git -C "$DIARY" remote | tr '\n' ' ')): nothing committed"
+else
+  git -C "$DIARY" add -- "$FILE"
+  git -C "$DIARY" commit -q -m "diary: add an entry to $MONTH"
+  echo "committed $(git -C "$DIARY" rev-parse --short HEAD)"
+fi
+```
+
+Tell the user which branch ran. The two refusals matter:
+
+- **A repo above the diary.** Say which directory holds it. If that is an
+  Obsidian vault that syncs with git, the diary already leaves the machine, and
+  the user probably does not know.
+- **A remote.** Say the name. Then stop. Do not push, and do not offer to.
+
+### What goes in a commit
+
+- Stage the file that you wrote, by name. Never `git add -A` and never
+  `git add .`. Both sweep in files that the user did not mean to commit.
+- The message names the file and the action, never the content of an entry:
+  `diary: add an entry to 2026-09`. The reason is in section G: an entry must
+  not appear outside `<diary_dir>`, and a commit message is a place that gets
+  copied out.
+- A commit can carry an edit that the user made by hand in the same file. That
+  is fine. Git keeps the version from before it either way.
+
+### Never
+
+- `git remote add`, `git push`, `git pull`, `git clone` to a remote.
+- `git commit --amend`, `git rebase`, `git reset --hard`, `git filter-repo`,
+  a force push. The history is the backup. A rewrite destroys the backup.
+- `git checkout` or `git restore` over a month file. That throws away every
+  entry written since the commit. Recover by hand, as below.
+
+If the user asks for a remote, do not add one. Tell them what a remote costs:
+git never forgets, so an entry that they delete stays in the history and reaches
+every machine that ever clones it.
+
+### Get a lost entry back
+
+The user deletes an entry by accident, or edits one into nonsense. Find it:
+
+```sh
+# which commits added or removed this text?
+git -C "$DIARY" log --oneline -i -S'pour cold water' --pickaxe-regex -- '*.md'
+
+# the whole entry, as it was before the newest of those commits
+SHA="$(git -C "$DIARY" log --format=%H -i -S'pour cold water' --pickaxe-regex -- '*.md' | head -1)"
+git -C "$DIARY" show "$SHA^:2026-09.md" | awk '/^## 2026-09-13 14:22/ {p=1; print; next} /^## / {p=0} p'
+```
+
+`-S` searches the content of every version, so it finds an entry that no version
+on disk still holds. That is the search that a plain directory cannot do.
+
+Warning: plain `-S` matches the case exactly, and you rarely remember the case
+of a lost entry. Always keep `-i` and `--pickaxe-regex` together, as above. The
+pattern is then a regex, so escape a `.` or a `*` in it.
+
+Then append the recovered text back through section A, with its original date
+and time in the heading. Do not restore the whole file over the current one.
+
+---
+
+## G. The rules that keep the store safe
 
 The diary holds years of work that exists in one copy. Treat it as such.
 
@@ -361,8 +464,8 @@ The diary holds years of work that exists in one copy. Treat it as such.
 - **Never write outside `<diary_dir>`.**
 - **Never touch a month file other than the current one** in an add.
 - **Change `tags.md` only when the user agrees to a new tag**, in that session.
-- **Do not commit the diary to git**, and do not run `git` in `<diary_dir>`,
-  unless the user asks in that session.
+- **Commit only under the rules in section F.** Never add a remote, never
+  push, and never rewrite the history.
 - **The diary is private.** Do not put an entry, or a part of one, into a web
   search, an API call, a commit message or any other place outside
   `<diary_dir>`.
@@ -375,7 +478,7 @@ The skill does not do these, on purpose. Ask before you build one.
 
 - A database, an index file or a cache.
 - Sync, backup or encryption.
-- A git commit after each entry.
+- A git remote, a push, or a history rewrite. Section F says why.
 - An edit of an old entry.
 - Analysis of an entry at add time. The skill keeps what you said. `review`
   is where interpretation happens, and only when you ask for it.
