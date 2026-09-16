@@ -84,6 +84,15 @@ the case is handled.
 
 - [ ] **Make it refuse once, deliberately.** Point it at something that would be
       unmissable if written, run it, confirm nothing was.
+- [ ] **A sabotage that still passes is a finding about the fixture, not a sign
+      the guard is unnecessary.** Breaking something on purpose checks two
+      things at once: whether the check is looking, and whether the input can
+      be seen. Two shapes recur: the fixture has no case near the boundary the
+      rule is about, and the fixture's data happens to select the same items
+      under the correct rule and the broken one. Assert the discriminating
+      precondition inside the test — "the two best items are both on one side,
+      or this test proves nothing" — so the fixture cannot drift back into
+      agreement.
 - [ ] **Check what it suppresses.** A dry-run guard that suppressed writes but
       not reads still hit the live system on every run. "Dry" usually means "no
       writes"; it rarely means "no contact".
@@ -119,6 +128,16 @@ print what the code actually sees. Before proposing a cause, not after.
 - [ ] **Do not diagnose from the comments around the code.** A comment is one
       person's model, and it names plausible causes precisely because plausible
       causes are what people write comments about.
+- [ ] **A demonstration script derives its conclusion from what it observed.
+      It never prints it as narration.** A script written to show that X
+      causes Y once printed the status, the body, and then a fixed string
+      naming the fault — after the service had been restarted and the request
+      had succeeded. The output asserted a fault it had just disproved, and the
+      genuine status code beside it lent the fabricated line its credibility.
+      Assert the precondition first and fail loudly if it does not hold. Print
+      the smallest value that settles the question. Every printed conclusion
+      must trace to a value the run produced; anything else is a comment that
+      happens to be inside a program.
 
 ---
 
@@ -142,6 +161,37 @@ print what the code actually sees. Before proposing a cause, not after.
       refresh that errors *after* every write has landed will report a failed
       run after a complete one, and the operator will re-run it.
 
+### D2. The second run, when the first run's output is now an input
+
+Any process whose output becomes part of its own input has two first runs, and
+the second one cannot be rehearsed before the first has happened. Tests written
+in advance encode the pre-run world, so they agree with the author exactly where
+the author has not yet seen the post-run one.
+
+- [ ] **For any command that writes a value it will later read — a marker, a
+      status, a processed-at stamp, a sentinel — run it twice and diff the
+      second run's plan against empty.** A backfill once stamped rows it could
+      not explain with the marker `unrecorded`, so they stayed distinguishable
+      from "not processed yet". The second run read its own marker as an
+      ordinary reason, concluded the reason no longer applied, and planned to
+      clear 1,371 flags the first run had just protected. 32 tests passed
+      throughout. A second run that plans zero writes is the check. One that
+      plans work is either non-idempotent or, as here, destructive. This
+      strengthens "plan a diff, not a rewrite": the diff must compare against
+      what is stored *including what this command itself stores*.
+- [ ] **Where a search reads its starting point from the field it writes its
+      answer to, the second run is a re-test of a conclusion, not a fresh
+      measurement.** After the first fit shipped, the start point stopped
+      being a neutral guess and became the previous answer, which is by
+      construction a local optimum of that objective. A one-coordinate search
+      cannot pass through a worse intermediate state, so a rule that must
+      take weight off its near-copy first stays at zero, and the run reads as
+      "measured, found nothing". Name the start point at the call site. Run
+      from several starts and report whether they agree. Disagreement is the
+      finding: the surface is flat and the answer is partly arbitrary. Then
+      check the docstring and the records for a sentence about the input's
+      provenance that the first run made untrue.
+
 ---
 
 ## E. What counts as having run it
@@ -158,6 +208,37 @@ Say which of these is true. They are not interchangeable:
 
 Reporting a lower row as a higher one is the failure this whole skill is about,
 in miniature.
+
+---
+
+## F. When you cannot run all of it
+
+**"I could not run it" is usually too coarse.** Name what each check you did
+run measures, and name the claim it does not reach, before the run rather than
+after it. When several cheap checks pass, their combined green reads as
+coverage of the whole claim.
+
+- [ ] **Separate the composition from the commands it composes.** A new
+      target ran the Python tests and then the frontend tests, and the
+      container could not build the pinned Python. The target's own behaviour
+      is neither half: it is the order, the stop at the first failure, the
+      environment it passes down, the working directory. Each of those has a
+      stand-in that runs in the environment you have — the full run proved the
+      stop because it never reached the second command, and a run with the
+      first half narrowed to one file that did collect proved the order.
+      Report the two results separately, so the reader sees which half is
+      unrun rather than one caveat over the whole change.
+- [ ] **For a rendered page, a parser is ground truth for syntax and says
+      nothing about layout.** A CSS parser, an HTML parser, a syntax check and
+      592 unit tests all passed a transition written on a property whose start
+      value was `auto`, and `auto` does not interpolate. The class a parser
+      cannot reach: a transition on a non-interpolable value, a stacking or
+      clipping ancestor, a value that resolves differently at the viewport in
+      use, anything that depends on measured height. A headless browser is the
+      ground truth and is often already installed; use it. When none is
+      available, the delivery says which checks ran, says the layout is
+      unchecked in those words, and names the specific things a person should
+      look at.
 
 ## Boundary with neighbouring skills
 

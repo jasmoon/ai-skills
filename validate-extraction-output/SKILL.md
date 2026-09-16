@@ -135,6 +135,17 @@ domain, and writing to a dead end. Each number alone told a flattering story.
       destructive action.
 - [ ] **Absent is not zero. Unknown is not false.** Preserve the distinction end
       to end; an unparseable value is dropped, not recorded as a negative.
+- [ ] **A bound on a ratio verifies one direction of a unit fault.** Two
+      columns in one row were once in different units across a stock split:
+      the count in the shares of its day, the volume in today's shares. The
+      guard "a count cannot exceed the volume" fired on a reverse split. A
+      forward split made the ratio ten times too small, and nothing fired,
+      because a ratio that is too small looks like a quiet day. When a guard
+      protects a ratio or a difference of two fields that could be in
+      different units, name the sign the guard does not catch, and check that
+      sign once against a known event — a split, a currency or scale change, a
+      renumbering. Record the event and the expected factor beside the guard,
+      so the next reader sees which sign was verified and which was not.
 
 ---
 
@@ -148,6 +159,17 @@ output is right.** This is the most expensive item on the list.
       a default action.
 - [ ] **Record every threshold with the population it was read off**, and
       re-derive it when ground truth arrives.
+- [ ] **Write the near-miss rule and the tie rule before the first result.** A
+      threshold that was chosen and not measured will be tested by a near miss
+      sooner than by a clear pass. A gate once asked for 40 of 50 draws and a
+      median snapped to a grid; the first run landed one rule on 39 and one
+      median halfway between two grid points, and the tie rule the agent chose
+      after seeing the result would have changed a shipped number. Before an
+      action is bound to a threshold, write down (1) what a miss within one
+      unit of the line means — "not shown" or "shown false" — and (2) how a tie
+      or a snap resolves, and that a result the tie rule decides is not a
+      result. Written afterwards, the reader cannot tell the rule from the
+      outcome it was chosen to fit.
 - [ ] **Two thresholds ANDed together are not two checks.** A threshold encodes
       an assumption that its signal carries constant information. When the
       signals are correlated that assumption is usually false, and the pair
