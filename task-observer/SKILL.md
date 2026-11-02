@@ -45,6 +45,8 @@ process for continuously improving their skill library through real-world usage.
 >    covers every field, not just `Principle`. `Principle` is the shortest and
 >    most abstract field; identifying detail collects in `Issue`, which names
 >    the actual systems.
+> 3. *Later reviews* — rules added from the observation log after 2026-08-16.
+>    The git history of this file lists each one.
 
 **Licence:** This skill is released under the [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) licence. You are free to share and adapt this skill for any purpose, provided
 you give appropriate credit to the original author.
@@ -166,6 +168,20 @@ checks its output against them before delivery.
 When creating or improving any skill through this observation process, ask:
 "Does this skill have rules? If yes, does it have a mechanism to enforce them?"
 If the answer to the second question is no, add one.
+
+**Prefer a block to a check when the rule governs an action.** A verification
+step re-reads output. A rule about an action, such as "read the held-out data
+once" or "never write to the live store", is broken before any output exists.
+Ask: "can this rule be broken by forgetting?" If yes, make the action
+impossible by accident: a flag that must be passed, a function that refuses,
+no default. One rule lived as a comment in two scripts and was broken in both.
+The same rule as a required flag held.
+
+**A guard inherits every dependency of the file it lives in.** Where the
+verification runs as a test, keep its imports to what it reads. One guard
+shared a file with an unrelated import. When that import failed, the file did
+not collect, the guard never ran, and nothing reported it. Check that the
+guard's file still collects when its heaviest dependency is missing.
 
 ### Self-Enforcement
 
@@ -317,9 +333,32 @@ session. The user should not be interrupted by the logging process.
 **Write observations within the same turn or immediately following turn — do
 not accumulate observations in memory for batch-writing later.**
 
-**Mandatory observation checkpoint after every 3rd TodoWrite completion:** After
-marking the 3rd, 6th, 9th (etc.) TodoWrite item as completed, pause and ask:
-"Have any unlogged observations accumulated?" This is a hard checkpoint.
+**Mandatory observation checkpoints.** Pause and ask "Have any unlogged
+observations accumulated?" at each of these events:
+
+- the user corrects you or reports a fault;
+- you say that you could not verify something;
+- you write a summary of completed work;
+- you mark the 3rd, 6th, 9th (etc.) todo item as completed, if the session
+  uses a todo list.
+
+These are hard checkpoints. The first three happen in every session. A
+checkpoint bound only to a todo tool never fires in a session without a todo
+list, and the rule against batch-writing then becomes advisory.
+
+**When the session cannot append to the log:**
+
+- A remote session that reaches the store only through a connector that
+  cannot append writes `pending-<date>-<project>.md` in the store. Each entry
+  uses `### Observation N:` with a literal `N`, so that no stale number can
+  collide. Session Start Protocol step 1 merges the file.
+- An unattended run (a schedule, a cloud routine) with no route to the store
+  writes its notes in a section "Notes for the observer" of the output that a
+  person already reads, such as the PR body. Each note has an Issue and a
+  Suggested improvement, and no number. The next session that reads that
+  output harvests the notes into the log.
+- Where the store is a folder on the machine, append to the log directly.
+  Never write a pending file.
 
 **Before assigning any observation number, run a mandatory pre-logging step:**
 Search the entire log file for all lines matching `### Observation \d+:`,
@@ -511,6 +550,12 @@ downloadable outputs and installed by the user via upload.
 
 ### Rules that apply in all environments
 
+0. **Find the source of truth before any edit.** Ask where the user keeps the
+version of the skill that they consider true. If it is a version-controlled
+directory, edit there and install from there, and skip the staged copy: it is
+a third version with no reader. Before the edit, diff the installed copy
+against the source and report the drift, because a review applied to a
+drifted copy forks the skill.
 1. **Always start from the live file, not cached memory.** Before any edit,
 read the current live file.
 2. **Stage edits in the workspace/output folder.** Never attempt to write
@@ -538,6 +583,11 @@ principle.
 When an observation triggers a cross-cutting principle, log it with
 `Skill: All skills` and surface it to the user for approval before adding
 it to the principles file.
+
+When a principle is added mid-session, name the step in the current session
+that it applies to, and run it there before the turn ends. A principle that
+is added and not run in the session that added it has been filed, not
+adopted.
 
 ### Cross-Cutting Principles File Structure
 
@@ -733,6 +783,9 @@ Run through these steps at the start of each task-oriented session:
 
 1. **Check whether files exist.** If the observation log or cross-cutting
 principles file don't exist, create them using the templates in this skill.
+Then list the store for `pending-*.md` files. Merge each one into the log,
+with numbers that continue from the log's current maximum, and move the file
+to `archive/`.
 
 2. **Scan for relevant context.** Read OPEN observations and active principles.
 Don't surface them unprompted unless directly relevant — hold in awareness.
@@ -745,6 +798,12 @@ ago, **or if the contents do not parse as a date** — an unparseable value is
 overdue, not absent. Treating it as absent is how a placeholder left in that
 file disables reviews indefinitely with no error. In web chat (no filesystem),
 check the handoff doc for the last review date.
+When the review is due and the user opened with a specific task, ask with a
+structured question tool, not in prose. Put the offer into the task's first
+question, with three choices: now, after this task, or defer. A prose offer
+is answered by silence, and the next session makes the same offer. Where no
+question tool exists, append the date to `review-deferrals.txt` beside the
+timestamp file. At the third deferral, run the review before the task.
 
 4. **Check the configuration file.** Run the config detection described in
 Recommended Activation Setup. Runs once per session.

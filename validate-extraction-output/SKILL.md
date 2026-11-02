@@ -1,6 +1,6 @@
 ---
 name: validate-extraction-output
-description: Pre-delivery gate for any claim derived from extracted, parsed, or ingested data. Load BEFORE reporting a count, rate, success percentage, match result, coverage figure, count of rows written, or a diff against a destination dataset; before binding an action (write, delete, retire, flag, fill) to a classifier's verdict; and before concluding that an extractor "works". "The extraction worked" is four separate claims — structural validity, measurement, coverage, and meaning — and passing one says nothing about the other three. Triggers on phrases like "X% success", "N rows matched", "parsed N items", "wrote N rows", "the fill worked", "no data found", dedupe, backfill, enrichment, sampling a payload, diffing extracted records against a database, or evaluating a detector against ground truth. Description matching alone is unreliable for a gate that fires at the END of a task — pair this with a CLAUDE.md instruction in any repo that does extraction work.
+description: Pre-delivery gate for any claim derived from extracted, parsed, or ingested data. Load BEFORE reporting a count, rate, success percentage, match result, coverage figure, count of rows written, or a diff against a destination dataset; before binding an action (write, delete, retire, flag, fill) to a classifier's verdict; and before concluding that an extractor "works". "The extraction worked" is four separate claims — structural validity, measurement, coverage, and meaning — and passing one says nothing about the other three. Triggers on phrases like "X% success", "N rows matched", "parsed N items", "wrote N rows", "the fill worked", "no data found", dedupe, backfill, enrichment, sampling a payload, diffing extracted records against a database, or evaluating a detector against ground truth. Also before prose that summarises a script's output. Description matching alone is unreliable for a gate that fires at the END of a task — pair this with a CLAUDE.md instruction in any repo that does extraction work.
 ---
 
 # validate-extraction-output
@@ -62,6 +62,14 @@ Output conforming to a schema can be entirely noise. Every check that measures
       answers questions it was never collected for — especially negative ones.
       An absent field is invisible from consuming code and obvious in a real
       specimen.
+- [ ] **Ask the live object what absence looks like, before a format writes it
+      down.** CSV, JSON, a spreadsheet and a database column each have their
+      own convention for "missing". A probe that saves its payload and reports
+      from the saved copy reports that convention, not the source's. One
+      source held the four-character string `None` on a third of its rows. The
+      CSV round trip read it back as null, the loader was written for a null,
+      and the delivered records carried the text `None` as a value. For each
+      field with a gap, print the type and the `repr` of the live value.
 - [ ] **State the converse:** one specimen proves a contract's *shape*, never
       its *stability*.
 
@@ -135,6 +143,14 @@ domain, and writing to a dead end. Each number alone told a flattering story.
       destructive action.
 - [ ] **Absent is not zero. Unknown is not false.** Preserve the distinction end
       to end; an unparseable value is dropped, not recorded as a negative.
+- [ ] **Count the gaps in every field you sort, rank or filter on, and drop
+      them on purpose.** A dataframe library reads an empty cell as NaN, and
+      NaN is truthy, so a filter meant to drop missing values keeps it. A sort
+      with NaN in its key returns an arbitrary order. One ranking put the
+      largest companies among the smallest, and only common knowledge caught
+      it. Drop the gaps before the sort, and report how many you dropped. A
+      result that contradicts what everyone knows is a reason to read the
+      input first.
 - [ ] **A bound on a ratio verifies one direction of a unit fault.** Two
       columns in one row were once in different units across a stock split:
       the count in the shares of its day, the volume in today's shares. The
@@ -250,6 +266,37 @@ as a finding about the data.
 
 ---
 
+## J. The prose is a second extraction
+
+A table copied cell by cell from the output is usually right. The sentences
+around it often are not, because they are composed by eye. Check each sentence
+against the raw output, not against the table written from it.
+
+- [ ] **Find every number and every range in the prose in the raw output.** A
+      range composed from a column is the most frequent fault: it leaves out
+      one value. Check the boundary case of each "above", "every" and "all". In
+      one run of entries, about six summaries had a wrong range, a wrong count
+      or a reversed direction, and every table was right.
+- [ ] **Write the sum beside each count while you draft.** "The first pass in
+      12 trials" was wrong where the table held 4 + 4 + 8 = 16. Delete the sum
+      only after it matches the table.
+- [ ] **A bound carries its sample size.** "With no pass in 100 trials, the
+      rate is very likely below 3 in 100" is true for 100 trials. With no pass
+      in 8, the same rule gives only "below about 37 in 100". When you quote a
+      bound, a rate or a "very likely", check that the sentence is about the
+      same sample size.
+- [ ] **Name an item by the identifier the code reads, not by its position.**
+      A trial labelled 3 in a list that counts from 1 had the seed `1000 + 2`
+      from a formula that counts from 0, and the report named `1000 + 3`. Where
+      a formula holds an index, state where the index starts in the same line.
+      When a correction changes how an index is read, search the file for every
+      other statement of that index.
+- [ ] **Where no person reads the prose before it is published** — a scheduled
+      run, an automatic report — put this section in the run's instructions as
+      a step before the output goes out.
+
+---
+
 ## Enforcement
 
 Do not summarise this skill and move on. Before delivering the result:
@@ -258,6 +305,8 @@ Do not summarise this skill and move on. Before delivering the result:
 2. Walk the checklist for that claim, in the response or in your reasoning.
 3. State explicitly which checks you **did not** run, in those words — "I didn't
    check coverage", "this rate is from the head of the file".
+4. If the result goes out as prose — a reply, a PR body, a journal entry — run
+   §J on each sentence against the raw output.
 
 An unstated gap reads to the user as a check that passed.
 
