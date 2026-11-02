@@ -65,6 +65,22 @@ default rather than the last resort.
       regenerating it from the same wrong assumption.
 - [ ] **Bound the first run.** `--limit`, one batch, one record. A first run
       that is also a full run gives you no cheap way to look at what happened.
+- [ ] **A first run has two budgets, and they answer different questions.** One
+      deep call on one target answers the shape and the cost. A shallow call
+      across a fixed sample of the real population answers coverage, and it is
+      the one that finds the empty result and the refusal. An issue named three
+      methods of a vendor API, and one call per method answered all three. A
+      sample of ten items then found two that returned nothing, in two
+      different ways: one refused with a named error, and one returned an
+      empty result with no error. Name both budgets before the run. A sample
+      taken by a fixed rule, such as every eleventh stored item, is cheap to
+      state and to repeat.
+- [ ] **A bounded run of a measurement prints numbers that look like results.**
+      Label its output "not evidence" before you read it. A small sample's
+      extreme value sits further from the truth, in whichever direction chance
+      took. A screen on ten units read 0.520 to 0.544 against a baseline of
+      0.500. The same screen on all 100 units read 0.490 to 0.511. When the full
+      run lands, record both numbers.
 - [ ] **Print what the code actually sees** on that first run — the resolved
       config, the path it opened, the number of records it loaded, the first
       one. "Loaded 0" answers the question the tests could not.
@@ -84,6 +100,28 @@ the case is handled.
 
 - [ ] **Make it refuse once, deliberately.** Point it at something that would be
       unmissable if written, run it, confirm nothing was.
+- [ ] **Read the failure message, and confirm that it is the guard's own.** A
+      red result does not show which check fired. A sabotage of an import
+      guard once crashed the test session at a circular import, before the
+      guard ran, and the red suite looked like success. Where something earlier
+      refuses the sabotage, write a second one that reaches the guard. A static
+      check fires on a construct that the parser sees and the runtime skips.
+- [ ] **Undo a sabotage by reversing the exact edit, never by discarding the
+      file.** A `git checkout` of the file once removed the sabotage and the
+      uncommitted feature that the guard was written for, and the green suite
+      did not show the loss. Commit or copy uncommitted work before the
+      sabotage.
+- [ ] **Before you fire a guard at a network service, prove that the process
+      you started is the one that answers.** Read the server's own bind line,
+      or check which process owns the port. A port that a brief calls "free" is
+      a claim from the past. One session's server failed to bind, and its guard
+      requests reached the user's own server, which had the live source. The
+      check became the live call it was meant to prevent.
+- [ ] **A check that passes by printing nothing must first be seen printing
+      something.** A text search written for a later step differed in case from
+      what it had to find, so it printed nothing while five matches remained.
+      Run a new check at once, where the expected result is known, and record
+      the count beside it.
 - [ ] **A sabotage that still passes is a finding about the fixture, not a sign
       the guard is unnecessary.** Breaking something on purpose checks two
       things at once: whether the check is looking, and whether the input can
@@ -92,7 +130,9 @@ the case is handled.
       under the correct rule and the broken one. Assert the discriminating
       precondition inside the test — "the two best items are both on one side,
       or this test proves nothing" — so the fixture cannot drift back into
-      agreement.
+      agreement. Where the quantity is a summary statistic, check its
+      robustness: a median ignores a short tail, so the contrast must be most
+      of the sample, not only present in it.
 - [ ] **Check what it suppresses.** A dry-run guard that suppressed writes but
       not reads still hit the live system on every run. "Dry" usually means "no
       writes"; it rarely means "no contact".
@@ -125,6 +165,17 @@ print what the code actually sees. Before proposing a cause, not after.
       unreachable — check it now. Those claims decay fastest and they are the
       ones that talk you out of the one action that would have answered the
       question.
+- [ ] **"I don't see the change" is often "the process predates the change".**
+      Compare the start time of every long-running process that serves the
+      feature with the time of the change, before you read the code. A process
+      keeps the code it loaded at start. A file that it reads per request does
+      not, so the result is a half-new system that looks like a bug.
+- [ ] **A message that explains an empty result is a diagnostic guard.** One
+      module printed "run the sync first" whenever no group was large enough,
+      and the user had just run the sync: every group was under the size floor.
+      Print what was counted. Name a cause only from a check that tells the
+      causes apart, and make each cause happen once to read the message under
+      it.
 - [ ] **Do not diagnose from the comments around the code.** A comment is one
       person's model, and it names plausible causes precisely because plausible
       causes are what people write comments about.
@@ -143,6 +194,14 @@ print what the code actually sees. Before proposing a cause, not after.
 
 ## D. The first write against a live system
 
+- [ ] **A command that you run "to look" is a first write until you have read
+      its default path.** Before the first run of a project's entry point,
+      read its main function, and name every external call and every write on
+      the default path. Find the flag that suppresses them, or ask first. A
+      module for groups was run once with only a database flag, to list the
+      stored groups. Its default path pulled from a live account and replaced
+      a local table that a recorded measurement had read. Intent to read does
+      not make a command read-only.
 - [ ] **Bound it hard.** `--limit`, and small enough that you can read every row
       you touched.
 - [ ] **Read it back.** A reported write is not a landed write. "Wrote N" that
@@ -208,6 +267,14 @@ Say which of these is true. They are not interchangeable:
 
 Reporting a lower row as a higher one is the failure this whole skill is about,
 in miniature.
+
+**A port that must change nothing is not proven by its ported tests.** Those
+tests pass on any code that the old tests passed. Before you port the tests,
+run the old and the new code on the same real inputs and compare the output
+byte for byte, and watch one deliberate change break the match. After the port,
+make one mutation per group of tests. A group that passes under its mutation is
+a gap, not a pass. In one port, a mutation passed all 74 tests of its group.
+The branch it changed was reached by 31 of 180 real renders and by no test.
 
 ---
 
