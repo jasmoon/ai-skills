@@ -295,17 +295,10 @@ coverage of the whole claim.
       first half narrowed to one file that did collect proved the order.
       Report the two results separately, so the reader sees which half is
       unrun rather than one caveat over the whole change.
-- [ ] **For a rendered page, a parser is ground truth for syntax and says
-      nothing about layout.** A CSS parser, an HTML parser, a syntax check and
-      592 unit tests all passed a transition written on a property whose start
-      value was `auto`, and `auto` does not interpolate. The class a parser
-      cannot reach: a transition on a non-interpolable value, a stacking or
-      clipping ancestor, a value that resolves differently at the viewport in
-      use, anything that depends on measured height. A headless browser is the
-      ground truth and is often already installed; use it. When none is
-      available, the delivery says which checks ran, says the layout is
-      unchecked in those words, and names the specific things a person should
-      look at.
+- [ ] **For a rendered page, load `validate-rendered-output`.** A parser is
+      ground truth for syntax and says nothing about layout. When no check of
+      the layout ran, the delivery says the layout is unchecked, in those
+      words.
 
 ## Boundary with neighbouring skills
 
