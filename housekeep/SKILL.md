@@ -126,6 +126,17 @@ Go through the record pulling out claims a machine or a grep can settle:
 * "not yet implemented", "there is no such function", "currently one request per
   row" — negative and exclusive claims, which rot fastest because the work that
   falsifies them never revisits the sentence
+* executable examples — a snippet with the output it printed. These are settled
+  by running them, not by reading them. An example is the claim a reader
+  trusts most and copies, and in one audit it was the only claim of nine that
+  was outright false. Where the format allows a runner, the follow-up finding
+  is that nothing runs it
+
+**A count that grows with normal work gets a date, not a new value.** A
+refreshed number is right for a day and then wrong, with nothing to tell the
+reader which. "A real run from <date>, kept for its shape" stays true. Where the
+number must be current to be useful, the proposal is to generate it, not to
+write it in prose.
 
 Check these against the source **first**. Read the document for narrative
 second. Reading end to end finds the contradictions the document already
@@ -151,7 +162,7 @@ stop — `# null-only fill; see decision N`. See `code comments`.
 ### 4. Ask what the record does not cover
 
 Every step so far checks whether what the record says is true. This one asks
-whether it says enough, and there is one gap worth checking by name.
+whether it says enough, and there are three gaps worth checking by name.
 
 **Write permission is the half that goes unwritten.** Mechanics get documented
 because they are what you were thinking about while building them. The rules
@@ -166,19 +177,39 @@ write that reaches this column" — and a second write path appeared four days
 later. The claim being written down is why it could be caught at all. Where no
 such rule is recorded, nothing can contradict anything.
 
+**The exit rule is the second.** A record says how to add an entry and how to
+read one. It rarely says what happens when an entry is resolved: does it move,
+get struck through, get deleted, get archived, and are ids reused afterwards?
+The first entry to close then invents a convention, and the breach is silent
+because no rule existed. Where no exit rule exists, the proposal is to write it
+with the first entry that needs it.
+
+**The third is a kind of artefact with no home.** List the kinds that the
+project writes — a decision, a fault, a measurement, a plan, a runbook — and
+check that each kind has exactly one stated home. Each record's scope can be
+correct while the union leaves a plan with nowhere to go. Where a record is
+marked for retirement, read what the retirement note objects to: it is often
+one section, not the file.
+
 ### 5. Build the cross-reference map as its own step
 
 Note which entry is cited by which later entry. An entry that later entries lean
 on, but which points forward to none of them, is where staleness accumulates —
 it is load-bearing and nothing has revisited it.
 
-### 6. Separate the three verdicts, and never conflate them
+### 6. Separate the verdicts, and never conflate them
 
 | verdict | what it means | what to do |
 | --- | --- | --- |
 | **superseded** | a later decision replaced this one | mark it, keep it, link forward |
 | **stale** | the claim was true and the code moved | correct the claim, note when |
 | **wrong** | the claim was never true | correct it and say it was an error |
+| **orphaned** | the claim is true, and the thing it cites moved | one redirect at the head of the record, not an edit per citation |
+
+An orphaned entry is not false: it records truthfully what a document said on
+its date. Where the record forbids edits to landed entries, one sentence at its
+head that says where the retired sections went makes every citation followable
+again. Count the citations first. With one, an edit may still be right.
 
 Superseded is the common one and the one most often mishandled. **Do not rewrite
 a superseded entry to look as though it was always right.** The reason to keep
@@ -235,7 +266,21 @@ while its opening sentence has become false, and the fix is to narrow the claim
 rather than to close the issue.
 
 If ids are stable and never reused, do not reuse them. A gap in the sequence is
-information.
+information. Check that stable numbers are literal text, such as `**8.**` or a
+heading per item, and not a Markdown ordered list: a preview renumbers the list
+from its first number, so the source and the preview name different items. When
+a user names an item by number in such a list, confirm which view they read.
+
+**Check the issue's estimate of what an answer would cost.** "Finding them
+would mean recomputing every date" kept one issue open for three sessions; the
+answer then took one query. Test the estimate against the schema, the indexes
+and the tools as they are now. An entry whose cost has collapsed is a task.
+
+**When an entry names a fix, run the condition across its range** — the hours
+of a day, the days of a week — before you re-check its trigger. Compare where
+the problem fires with what the named fix removes. One deferred fix, a trading
+calendar against fetches "on a closed day", removed the smaller share: the
+check read as stale from midnight to the open on every trading day.
 
 ## `docs plan`
 
@@ -475,6 +520,14 @@ an answer.
    operative, and evidence gathered by reading will confirm the wrong one
    indefinitely.
 
+**A directory that something enumerates is shared state.** Where a fake
+source or a loader globs a test-data directory, a new fixture there becomes a
+record it serves. Two fixtures once broke three unrelated tests that asserted
+exact counts, and two files that shared one key made one of them unreachable.
+Propose that the enumerated directory holds only what the source serves, that
+a test's own files live outside the glob, and that the rule is written beside
+the directory.
+
 **The move and the reconciliation land together or not at all.** A half-done
 rename is worse than no rename: the suite passes, the docs lie, and the next
 person to touch it inherits both.
@@ -545,6 +598,21 @@ Failure modes to look for specifically:
 * **The empty-collection pass.** A parametrised guard over a glob that stops
   matching passes every case. Assert the collection is non-empty — a guard on
   the guard.
+* **The half-domain pass.** Non-empty is not enough. A guard that iterated one
+  of a file's two collections passed, looked exercised, and was blind to the
+  half where the constants appeared. Where a record holds more than one
+  collection of the same kind, enumerate them from one place that the guard
+  and the code both read, and fire the guard once per collection.
+* **The per-site obligation.** "Every entry point must call the helper" is
+  carried by prose, and prose is not read when a new site is created. Of four
+  sibling commands, one called the helper and three did not. List the sites
+  and assert the call at each one. Where that test is awkward, the finding is
+  that the rule wants a decorator, a base class or a wrapper.
+* **A classification derived from prose.** A label that code consumes is stored
+  as data and checked against behaviour, never inferred from a description. A
+  keyword search published a rule under the wrong kind, because its
+  description said "it is a flag and not a rank". Prose names a category in
+  the sentences that deny it too.
 * **The over-broad match.** A guard that reads prose will match English. Choose
   the writing convention deliberately — a citation is in backticks, a historical
   reference is allowlisted with a stated reason — and **record that convention
@@ -582,6 +650,15 @@ Rules for the proposal:
   plainly and say what the record said. This happens most on `structure`.
 * Apply only after the user says so, and apply the whole approved set in one
   edit pass so the record is never half-updated.
+
+## Commit boundaries
+
+When a session will hold several features, ask at the start whether to commit
+each one when its tests pass. Interleaved edits to one file destroy the commit
+boundaries afterwards: one session left 55 changes from seven features in one
+file, and every split would have been a commit that does not build. When the
+boundaries are gone, say so, and make one commit whose message carries the
+structure.
 
 ## What housekeep never does
 
