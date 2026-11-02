@@ -6,7 +6,7 @@ Skills for Claude Code, and the global instructions that I recommend with them.
 | --- | --- |
 | `CLAUDE.global.md` | Ground rules and writing rules to copy into your own setup |
 | `check-global-subset.sh` | A check that keeps that file honest |
-| One directory per skill | Seven skills, listed below |
+| One directory per skill | Eight skills, listed below |
 
 ## The skills
 
@@ -19,6 +19,7 @@ Skills for Claude Code, and the global instructions that I recommend with them.
 | `polite-external-probing` | Before any request to infrastructure that you do not own. Covers the first fetch, the delay between requests, and a 403 or a 429. |
 | `task-observer` | During a work session, to catch a pattern that is worth a new skill. Written by Eoghan Henn, [rebelytics.com](https://rebelytics.com). |
 | `validate-extraction-output` | Before you report a number that came from data you extracted, parsed or ingested. |
+| `validate-predictor` | Before you say that an input, a rule or a fitted score predicts an outcome. Also before a read of held-out data, and before a scheduled run that screens candidates. |
 
 ### Install a skill
 
@@ -34,10 +35,11 @@ project only, copy it to `.claude/skills/` in that project instead.
 The copy does not track this repo. Copy the directory again after you change a
 skill here.
 
-### Four of them need a line in your CLAUDE.md
+### Five of them need a line in your CLAUDE.md
 
-`first-real-run`, `polite-external-probing`, `validate-extraction-output` and
-`task-observer` all say the same thing in their own words. A skill fires when its
+`first-real-run`, `polite-external-probing`, `validate-extraction-output`,
+`validate-predictor` and `task-observer` all say the same thing in their own
+words. A skill fires when its
 description matches what you asked for. That match is not reliable for a gate that
 must fire at a set moment, such as before the first live run, or after the last
 number is counted. Each skill ships a short trigger block for you to paste into the
