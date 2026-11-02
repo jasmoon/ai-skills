@@ -6,7 +6,7 @@ Skills for Claude Code, and the global instructions that I recommend with them.
 | --- | --- |
 | `CLAUDE.global.md` | Ground rules and writing rules to copy into your own setup |
 | `check-global-subset.sh` | A check that keeps that file honest |
-| One directory per skill | Nine skills, listed below |
+| One directory per skill | Ten skills, listed below |
 
 ## The skills
 
@@ -17,6 +17,7 @@ Skills for Claude Code, and the global instructions that I recommend with them.
 | `housekeep` | When the records and the code disagree. `docs` audits written records. `code` audits the source. |
 | `plan-next-steps` | When you want the design decisions, the concerns and the open questions on the current work. It asks you questions first. |
 | `polite-external-probing` | Before any request to infrastructure that you do not own. Covers the first fetch, the delay between requests, and a 403 or a 429. |
+| `prepare-long-running-task` | Before a task runs over many steps without you: a `/loop`, a scheduled or cloud routine, a background run. Also when you write the runbook or work list it reads. |
 | `task-observer` | During a work session, to catch a pattern that is worth a new skill. Written by Eoghan Henn, [rebelytics.com](https://rebelytics.com). |
 | `validate-extraction-output` | Before you report a number that came from data you extracted, parsed or ingested. |
 | `validate-predictor` | Before you say that an input, a rule or a fitted score predicts an outcome. Also before a read of held-out data, and before a scheduled run that screens candidates. |
