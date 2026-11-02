@@ -18,6 +18,8 @@ Automatically gather context from available sources:
 - Conversation history
 - **The repository's own decision records**, searched for the topic of the request: a decision log, an open-issues file, an ADR directory, a plan with a worklist. A diff shows what changed; the records show what was decided, and the most useful context for "should we do X" is usually the last time someone wrote down when X would be worth doing. If a recorded position exists, measure the current code against it and lead the analysis with that measurement. A recorded position is a hypothesis to re-derive, not an answer to defer to.
 
+**When the request needs a data source the project has not used**, read the installed client library for that source — its method names and docstrings — before you plan how to get the data. Name each call that returns history, and the fields it does not return. A plan from memory once opened with months of forward collection; a search of the installed client found a call that returned the same history backward, which no project document named.
+
 **When the request carries a belief** — "I think X leads to Y", "the 2nd one is stronger than the 1st" — ask which case or cases made the user believe it. A hypothesis about markets, users or failures usually rests on one or two remembered examples. Those examples are the cheapest test, and the one whose result the user will accept, because they are the user's own evidence. Read them before the build. A motivating case that does not show the effect closes the phase before it opens, and one that does sets the gate for the build.
 
 Then, identify what additional information you still need. Ask any clarifying questions about:
@@ -42,6 +44,8 @@ These may include decisions about: API shape, data modeling, component boundarie
 **Where a phase or milestone blocks several dependents, look for the cold-start lever before accepting the sequence.** A long-pole phase is usually splittable wherever a seed mechanism — a hand-curated allowlist, a fixture, a static first version — lets a dependent surface render real content without waiting for the full upstream dependency. Bundling a schema, an RPC, two UI surfaces and a discovery UX into one phase holds everything at the speed of the slowest part, and the seam is generally visible once you ask which dependent could ship against a stub.
 
 **Where a decision is a choice between options that persist data, evaluate each one against failure, not only the happy path.** Partial writes and atomicity, a client crash mid-operation, a network drop before commit — what does each option leave behind, and what does recovery cost? Then say which you recommend. Competing persistence designs tend to look alike while everything works; what separates them is the state a half-finished operation leaves. Produce this by default rather than waiting to be asked for it.
+
+**Before you propose a change to a recorded rule, read its current text and every place that applies it.** State both in the proposal: what the rule says, and what the practice does. Propose against whichever of the two causes the problem. A proposal once offered to "move the bar to the unseen data" for a rule that already read the unseen data; the strictness came from a stop rule that applied the same threshold to the fit data.
 
 ### 3. Top Concerns (up to 4, ranked by importance)
 Identify concerns about the current design or approach, if applicable. Rank them from most to least critical. For each, briefly state the concern and its potential impact. If there are no concerns, say so.
@@ -69,7 +73,11 @@ These may include: unspecified edge cases, unclear user flows, missing acceptanc
 
 One question stands whenever the work rests on a belief: **can the motivating case be checked with one read before the build?** If it can, put the check first in the sequence. A build that precedes its cheapest test is a build whose gate was set after the result.
 
+**Cost each question in what it needs before you write it into a plan.** A question that needs only the data in hand and the code already written is answered now, and its answer goes into the record of results. Only a question that needs new data, a new target or a person's decision goes into the plan. Say which questions you closed this way. Once, three of four open questions were settings of the script that had just run, and ten minutes closed them; the plan gained one item instead of four. A question too expensive to close now is still worth costing, because a recorded cost is what stops it being reopened.
+
 ### 5. Before You Close This Session
+Ask first: **where does the next session run, and what does it lack?** If it runs elsewhere — a remote container, another machine — every local dependency is a candidate to commit: a script that is a throwaway here is the only route to the data there. Name the size of the part the work reads, not the size of the file it lives in. One store was 1.24 GB and was named as the block; the one table the work read was 3.4 MB gzipped.
+
 Identify anything worth doing before the session ends. This could include:
 - Uncommitted changes that should be committed or stashed
 - TODOs or decisions that should be captured somewhere (memory, a file, a comment)

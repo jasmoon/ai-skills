@@ -653,6 +653,14 @@ Check for suppression marker at
 `[workspace folder]/skill-observations/scheduled-review-decline.txt`. If it
 exists and was updated less than 30 days ago, skip the recommendation.
 
+**Check the delivery route before Step 1.** When the skills live in a
+repository and the review ends in a pull request, open a draft pull request
+from a throwaway branch, then close it. A query of the repository's
+permissions is not a check: it reports the user's role, not the token's
+scopes, and once said "admin" for a token that could push but not open a pull
+request. Where the route cannot open a pull request, say so now. At the end,
+push the branch and give the compare link, with the body in a file.
+
 **Step 1 — Load observations and principles**
 
 Read `[workspace folder]/skill-observations/log.md`. Extract all OPEN
