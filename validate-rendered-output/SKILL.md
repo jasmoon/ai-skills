@@ -1,6 +1,6 @@
 ---
 name: validate-rendered-output
-description: Pre-delivery gate for any change whose result is seen rather than read - a web page, a chart, a layout, CSS, an SVG, an image, a PDF or a slide. Load BEFORE you say that a visual change works, when the user reports a visual fault, and before the second round of fixes for the same kind of fault. Tests, parsers and type checks prove that the output is well formed. They say nothing about where an element lands, how large it is, or what covers it. Triggers on "it looks wrong", "overlapping", "it disappeared", "the layout", "the chart", CSS, SVG, render, screenshot, headless browser, and any reply that would say "I have not seen it render".
+description: Pre-delivery gate for any change whose result is seen rather than read - a web page, a chart, a layout, CSS, an SVG, an image, a PDF or a slide. Load BEFORE you say that a visual change works, when the user reports a visual fault, before the second round of fixes for the same kind of fault, and before you build a layout from words about position. Tests, parsers and type checks prove that the output is well formed. They say nothing about where an element lands, how large it is, or what covers it. Triggers on "it looks wrong", "overlapping", "it disappeared", "the layout", "the chart", CSS, SVG, render, screenshot, headless browser, and any reply that would say "I have not seen it render".
 ---
 
 # validate-rendered-output
@@ -26,6 +26,19 @@ then arrived as a sentence from the user, one fault per round.
 
 ---
 
+## 0. Before the build — words about position have two readings
+
+- [ ] **Name the reading of a request about position before you build it.**
+      Words such as "where it was", "above", "to the right" or "in the bar"
+      often fit two layouts. Write the reading that you chose in one line.
+      When two readings give different layouts, ask one question with a small
+      text preview of each layout. In one session the agent built one reading
+      of "where it was vertically" and the user stopped it. On the next
+      request of that kind, a question with previews took one message and no
+      extra round. A wrong guess costs a build, a check and a correction.
+
+---
+
 ## A. A parser checks syntax, not layout
 
 - [ ] **Do not read a green parser or test run as a layout result.** A CSS
@@ -35,6 +48,14 @@ then arrived as a sentence from the user, one fault per round.
       transition on a value that does not interpolate, a stacking or clipping
       ancestor, a value that resolves differently at the viewport in use, and
       anything that depends on measured height.
+- [ ] **A test that looks for text on the page can pass after the text moves
+      out of view.** A test that joins the text of several sections still
+      finds a warning that moved behind a button. Split guarded text in two
+      lists: text that must show on the first render, and text that may sit
+      behind a control. Check the first list against the first render only.
+      When a change moves guarded text, do not also change the input of the
+      test in the same change without a line that says so. Make the test fail
+      one time on the moved text, and then decide.
 
 ---
 
@@ -59,9 +80,35 @@ then arrived as a sentence from the user, one fault per round.
       write to the real store or call a live system. Where the server has an
       offline flag, use it, and prove that the process you started is the one
       that answers (see `first-real-run`, section B).
+- [ ] **Set up the safe server one time per session, not one time per
+      check.** Make it a permanent named entry in the launch configuration,
+      or put it in a configuration file that git does not track. Do not add
+      and remove a temporary entry in a tracked file for each check. In one
+      session that edit and its revert happened about 15 times, and each
+      revert was a chance to commit a scratch path.
+- [ ] **Keep one server and one tab for a loop of visual changes.** A static
+      build is read from disk, so a reload after each build is enough. Close
+      the tab and stop the server when the loop ends. In one session each
+      check opened a new server and a new tab, four tabs stayed open, and the
+      user asked why.
 - [ ] **Read the screenshot, and search the rendered DOM** for the values that
       scripts wrote. Take the screenshot at the viewport size that the user
       has, and name that size.
+- [ ] **Take a zoomed image of each hover and focus state that the change
+      touches.** A full-page image at rest does not show a hover state, and a
+      small element can be wrong at a size that a full-page image hides.
+- [ ] **Do not trust one capture from a hidden or background browser pane.**
+      A background page can paint late, so the capture can be older than the
+      DOM. When such a capture shows a fault, or shows a fix, measure the DOM
+      and take a second capture before you act. In one session two captures
+      showed faults that did not exist.
+- [ ] **See a state that depends on the time with a fake clock.** Replace the
+      date object in the page with a fixed time, then wait for the page's own
+      timer. This shows a label that appears only during market hours, or a
+      notice that appears only after a date, with no wait and no live call.
+      Say which source of the state the check used. When the page can also
+      take that state from a live system, the fake clock does not prove that
+      path.
 
 ---
 
@@ -80,6 +127,13 @@ then arrived as a sentence from the user, one fault per round.
       fault.** A description gives one fault per round. It never says how many
       other instances exist, and that count decides whether the fix is a patch
       or a rule.
+- [ ] **Measure the rendered box of each new element.** A new element can
+      receive a rule that was written for something else. In one session a
+      rule that sized every chart `svg` in a panel drew a new 13 px icon very
+      large. The probe read the opacity of the icon and the height of its
+      strip, and both were correct. A probe confirms only the properties that
+      you chose, so add the width and height of each new element, and compare
+      them with the size that the change intends.
 - [ ] **Keep the harness as the regression test.**
 - [ ] **Say what the harness cannot do.** It shows that the output is well
       formed and that the properties you chose to measure hold. It cannot show
@@ -94,8 +148,10 @@ Do not summarise this skill and move on. Before you say that a visual change
 works, state in the response which of these you did:
 
 1. **Syntax:** which parser, check or test ran.
-2. **Seen:** a screenshot, and at which viewport size.
-3. **Measured:** which property, over how many instances.
+2. **Seen:** a screenshot, and at which viewport size. Name each hover or
+   focus state that you saw zoomed.
+3. **Measured:** which property, over how many instances. For a new
+   element, include its box.
 
 If you did neither 2 nor 3, write "the layout is unchecked", in those words,
 and name the specific things that a person should look at.
