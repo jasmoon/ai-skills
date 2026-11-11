@@ -1,6 +1,6 @@
 ---
 name: housekeep
-description: Bring a project's records and code back into agreement. Two halves - `docs` audits written records (decisions, issues, implementation plans, observations, diagrams) and never touches source; `code` audits the source itself (structure, comments, guards) and can move modules and edit comments. Invoke as `housekeep <target>`, or `housekeep docs` / `housekeep code` / `housekeep all` to run a whole half. Default mode reads the session or branch diff and asks what it invalidated; --full extracts every checkable assertion and verifies it against current source. Always proposes before it writes. Load when asked to housekeep, tidy, audit, reconcile or update docs, a design-decision log, an ADR directory, an open-issues list, a TODO file, an implementation plan, an observation log or a diagram; when a branch has finished part of a plan and the plan still lists it; when an MR or PR title and description no longer describe the branch; when deciding whether a package has earned a subfolder or reconciling a rename; when comments have drifted from what they describe; when asking whether the test suite really guards something; at the end of a session that changed behaviour; whenever a decision may have been superseded or an issue closed by the work just done.
+description: Bring a project's records and code back into agreement. Two halves - `docs` audits written records (decisions, issues, plans, observations, diagrams) and never touches source; `code` audits structure, comments, guards and branches, and can move modules and edit comments. Invoke as `housekeep <target>`, or `housekeep docs` / `housekeep code` / `housekeep all`. Default mode reads the session or branch diff and asks what it invalidated; --full checks every assertion against current source. Always proposes before it writes. Load when asked to housekeep, tidy, audit or reconcile docs, a decision log, an ADR directory, an issues list, a TODO file, a plan, an observation log or a diagram; when a plan still lists finished work; when a PR description no longer fits its branch; when a package may need a subfolder or a rename needs reconciling; when comments drift; when asking whether tests really guard something; when a merged change is missing from the default branch; at the end of a session that changed behaviour.
 ---
 
 # housekeep
@@ -19,7 +19,7 @@ proposal.
 | half | targets | touches | worst case |
 | --- | --- | --- | --- |
 | `docs` | `decisions` `issues` `plan` `observations` `diagrams` | records only | a wrong sentence |
-| `code` | `structure` `comments` `guards` | source files | a half-done rename |
+| `code` | `structure` `comments` `guards` `branches` | source files and branches | a half-done rename |
 
 That is the whole reason for the split, and it is worth knowing before you run
 anything. A `docs` pass ends when the record agrees with the code. A `code` pass
@@ -624,6 +624,38 @@ carries the same propose-then-apply rule as everything else in this half.
 
 ---
 
+## `code branches`
+
+Where the merges went, as against where the record says they went. "Merged" is
+a fact about a pull request, not about the default branch.
+
+* **Every merged PR is on the default branch.** For each merged PR whose base
+  was not the default branch, test whether its merge commit is an ancestor of
+  the default branch, and list each one that is not. In one project three
+  stacked PRs, each based on the branch of the one before, were merged within
+  26 seconds. The first went to the default branch as a squash. The host did
+  not move the base of the other two, so both merged into a finished branch,
+  and the host marked both "merged". The fault surfaced two days later as a
+  missing button. The ancestry check found exactly those two in under a
+  minute. After a restore, run the type check and the tests: a clean text
+  merge does not prove working code.
+* **Retarget a stacked PR before you merge it.** Where a skill or a note opens
+  a stacked PR, say before the merge: change the base of the next PR to the
+  default branch, or merge from the top of the stack down.
+* **A branch whose PR was squash-merged is spent.** Before you resolve a
+  conflict on such a branch, read `MERGE_HEAD` to learn what is coming in, and
+  diff the local tip against the default branch. If the default branch already
+  holds the branch's content, abort, and move to the default branch or reset
+  the branch. In one pull, three docs conflicted although the default branch
+  already held every line of both sides, in newer versions. A conflict between
+  two copies of the same change has no right answer to choose, only a duplicate
+  history to drop.
+
+These are reads, and the fixes move branches. Propose the fix first, as
+everywhere in this half.
+
+---
+
 ## Propose, then apply
 
 **Never edit before showing the proposal.** A supersession is a judgement, not a
@@ -677,6 +709,9 @@ structure.
 * **Never move code as a side effect of an audit.** A `code structure` move
   happens because it was proposed and approved on its own terms, never because a
   `docs` pass noticed something adjacent.
+* **Never reset, abort, cherry-pick or retarget as a side effect of an audit.**
+  A `code branches` fix happens because it was proposed and approved, the same
+  as a move.
 * **Never touch records in another repo** without being asked, even when the
   same drift is visible there.
 
