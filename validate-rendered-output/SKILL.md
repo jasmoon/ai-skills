@@ -56,6 +56,14 @@ then arrived as a sentence from the user, one fault per round.
       When a change moves guarded text, do not also change the input of the
       test in the same change without a line that says so. Make the test fail
       one time on the moved text, and then decide.
+- [ ] **Test a forbidden word on each run of text alone, never on the joined
+      text.** Joined text has boundaries that the reader never sees. A pattern
+      with a wildcard between two words matches across two runs: one test
+      failed on a page that held no such phrase, because a run that ended in
+      "all" stood next to a run that began with "time". Remove the sentences
+      that deny the claim before the check, and fire the check one time on a
+      page that holds the word. A false failure trains a person to loosen the
+      check.
 
 ---
 
@@ -80,6 +88,12 @@ then arrived as a sentence from the user, one fault per round.
       write to the real store or call a live system. Where the server has an
       offline flag, use it, and prove that the process you started is the one
       that answers (see `first-real-run`, section B).
+- [ ] **A safe server can still change its copy.** "Cannot reach the live
+      system" and "does not change" are two properties. A job that starts on
+      load can clear or rewrite the copy: one cached answer held 109 rows, and
+      the same request a minute later held 0. When you build a fake answer from
+      the safe server, capture it one time and assert its size before the fake
+      goes in. When a fake shows nothing, check the fake before the page.
 - [ ] **Set up the safe server one time per session, not one time per
       check.** Make it a permanent named entry in the launch configuration,
       or put it in a configuration file that git does not track. Do not add
@@ -102,6 +116,24 @@ then arrived as a sentence from the user, one fault per round.
       DOM. When such a capture shows a fault, or shows a fix, measure the DOM
       and take a second capture before you act. In one session two captures
       showed faults that did not exist.
+- [ ] **A capture is evidence only of the moment it was taken.** A capture
+      taken right after an input can be from before the page drew the input,
+      and a zoom tool can crop the last full capture, not the page now. Take a
+      fresh capture after the last input and before any crop. When an image and
+      a read of the page state disagree, take a new capture before you believe
+      either one. In one session this happened four times, and each time the
+      fresh capture agreed with the state.
+- [ ] **Read the state after each input, not after a batch.** A check that
+      repeats an action can undo it. A second click on a toggle closes what the
+      first click opened, and the result reads as a dead control. Before you
+      click a control a second time, ask whether it is a toggle. When a control
+      seems to do nothing, click it one time from a known state and read the
+      state before you call it a fault.
+- [ ] **A native pop-up is outside the page.** A date picker, a select list or
+      a colour picker is drawn by the browser, so no page capture and no DOM
+      read shows it. Check the attribute that drives it, and say in the report
+      that the pop-up itself is unseen. Close it with Escape before the next
+      capture.
 - [ ] **See a state that depends on the time with a fake clock.** Replace the
       date object in the page with a fixed time, then wait for the page's own
       timer. This shows a label that appears only during market hours, or a
@@ -134,6 +166,22 @@ then arrived as a sentence from the user, one fault per round.
       strip, and both were correct. A probe confirms only the properties that
       you chose, so add the width and height of each new element, and compare
       them with the size that the change intends.
+- [ ] **Measure the axes that the change should not move, too.** A fix for one
+      axis can move the element on the other. One header was made bold on
+      hover, with a hidden bold copy to hold its width. A check of every
+      column's left edge matched to 0.1 px, and the header still sat 3 px below
+      its neighbours, because the hidden copy set its baseline. Measure both
+      axes of the changed element and of one neighbour, at rest and in the
+      changed state. For text, read the text's own box, not only its cell.
+- [ ] **A probe can cause the fault it reports.** After a harness reports a
+      fault, read back the state that its own actions can move: the scroll
+      offset of every ancestor, focus, hover, open menus. Then reproduce the
+      fault with one real input before you file it or fix it. In one session a
+      harness called `scrollIntoView` on each button. That call also scrolled
+      a clipped ancestor 539 px sideways, and the harness reported 108 of 127
+      buttons covered. With vertical scrolls only, 19 of 19 received the
+      pointer. Prefer a move that touches one axis or one element, such as
+      `window.scrollBy`.
 - [ ] **Keep the harness as the regression test.**
 - [ ] **Say what the harness cannot do.** It shows that the output is well
       formed and that the properties you chose to measure hold. It cannot show
@@ -149,7 +197,8 @@ works, state in the response which of these you did:
 
 1. **Syntax:** which parser, check or test ran.
 2. **Seen:** a screenshot, and at which viewport size. Name each hover or
-   focus state that you saw zoomed.
+   focus state that you saw zoomed. Name what no capture could reach, such as
+   a native pop-up, as unseen.
 3. **Measured:** which property, over how many instances. For a new
    element, include its box.
 
