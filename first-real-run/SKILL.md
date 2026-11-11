@@ -84,6 +84,25 @@ default rather than the last resort.
 - [ ] **Print what the code actually sees** on that first run — the resolved
       config, the path it opened, the number of records it loaded, the first
       one. "Loaded 0" answers the question the tests could not.
+- [ ] **When the data is a union of partitions, list each comparison that reads
+      the whole union.** Markets, regions, tenants and time zones are
+      partitions. A max or a min over the union is a hidden join. One table
+      kept only the live rows newer than the newest date of a grid that held
+      two markets. The earlier market had already stored a finished day with
+      the later market's live date, so every row of the later market was
+      dropped. Every fixture held one market, so the tests passed by
+      construction. Ask whether each such comparison must be per partition,
+      and build one fixture that mixes the partitions in the shape that the
+      real store holds now.
+- [ ] **Before you add a test to a file, read the fixture it uses and two
+      neighbour tests.** A fixture can have side effects in time: a refresh, a
+      job or a cache fill that runs on after the request. If it does, find how
+      the neighbours wait for it, and do the same. One new test read a value
+      twice and compared the two, while a background refresh wrote newer rows
+      between the reads. Three tests in the same file already waited for that
+      refresh, and one comment named the race. When a test that compares two
+      reads fails one time, suspect a writer between the reads before you call
+      it flaky.
 
 **A passing suite is not a claim about the data.** It is a claim about the
 agreement between the code and its author, and where the author was wrong the
@@ -106,6 +125,12 @@ the case is handled.
       guard ran, and the red suite looked like success. Where something earlier
       refuses the sabotage, write a second one that reaches the guard. A static
       check fires on a construct that the parser sees and the runtime skips.
+      A refusal can also come from the platform: a rename, a file lock or a
+      permission that one operating system enforces and another does not. One
+      build guard was removed on purpose, and the build still raised, because
+      the rename at its end refuses an existing target on Windows. On Linux and
+      macOS the same rename replaces the target. Pin the guard's own message
+      in the test, and name the platform that the sabotage ran on.
 - [ ] **Undo a sabotage by reversing the exact edit, never by discarding the
       file.** A `git checkout` of the file once removed the sabotage and the
       uncommitted feature that the guard was written for, and the green suite
@@ -295,6 +320,20 @@ coverage of the whole claim.
       first half narrowed to one file that did collect proved the order.
       Report the two results separately, so the reader sees which half is
       unrun rather than one caveat over the whole change.
+- [ ] **When a test run fails, run the same target on the clean tree before
+      you blame the change.** Stash the change and run once. "The tests pass"
+      is three claims: they ran, they passed, and they were all of them.
+      Report three numbers: what ran, what passed, and what could not run and
+      why. Name the files that could not run, and do not average them into a
+      pass rate. In one remote session a pinned toolchain could not install,
+      and the same 5 of 24 test files failed to collect on a clean checkout.
+      Three days later the same pin failed 5 of 33.
+- [ ] **Run a suite with its failure summary on, the first time, and keep the
+      names.** For pytest that is `-rf`. A flaky failure may not come back, so
+      the first run can be the only evidence. One full run was cut to its last
+      line, "1 failed, 1153 passed", and the reruns passed. The report had to
+      say "one test failed once and I cannot tell which", and the flaky test
+      was pushed. Trim output after you know that it holds no failure.
 - [ ] **For a rendered page, load `validate-rendered-output`.** A parser is
       ground truth for syntax and says nothing about layout. When no check of
       the layout ran, the delivery says the layout is unchecked, in those
