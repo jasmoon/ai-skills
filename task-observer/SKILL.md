@@ -339,10 +339,14 @@ observations accumulated?" at each of these events:
 - the user corrects you or reports a fault;
 - you say that you could not verify something;
 - you write a summary of completed work;
+- you make a commit;
 - you mark the 3rd, 6th, 9th (etc.) todo item as completed, if the session
   uses a todo list.
 
-These are hard checkpoints. The first three happen in every session. A
+These are hard checkpoints. The first three happen in every session. A commit
+recurs even in a fast loop of small requests, where each request feels too
+small to stop for. Where the host allows a hook after `git commit`, bind the
+question to it. A
 checkpoint bound only to a todo tool never fires in a session without a todo
 list, and the rule against batch-writing then becomes advisory.
 
@@ -812,6 +816,11 @@ question, with three choices: now, after this task, or defer. A prose offer
 is answered by silence, and the next session makes the same offer. Where no
 question tool exists, append the date to `review-deferrals.txt` beside the
 timestamp file. At the third deferral, run the review before the task.
+"After this task" is a deferral until the review runs. Name the pending review
+in each summary of work, and ask once at the first natural end of the task,
+such as an opened pull request, not at every summary. If the session ends
+without the review, append the date to `review-deferrals.txt`. It counts
+toward the third deferral.
 
 4. **Check the configuration file.** Run the config detection described in
 Recommended Activation Setup. Runs once per session.
