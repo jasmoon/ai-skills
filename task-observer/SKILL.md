@@ -388,6 +388,10 @@ a collision occurred — renumber the current entry to `max+1` in place.
 Always append new observations to the **END** of the log file. Never insert
 mid-file. Always use `### Observation NNN:` format.
 
+**Status line (mandatory):** Put a `**Status:** OPEN` line directly under the
+title of each new entry, and check it after the write. A review finds its work
+by a search for OPEN, so an entry without a Status line is never reviewed.
+
 Each observation follows this format:
 
 ```
@@ -713,13 +717,23 @@ which system skill it extends and contain only the delta.
 
 **Step 6 — Mark observations as ACTIONED**
 
-Update each applied observation's status from OPEN to ACTIONED:
+Update each applied observation's status from OPEN to ACTIONED when you apply
+it, not at the end of the review:
 `ACTIONED — Applied to [skill-name] (review [date])`
+
+Where the change goes out as a pull request, write
+`ACTIONED — Applied to [skill-name] in PR #N, open (review [date])`. Do not
+wait for the merge. The merge happens after the session ends, so a review that
+waits for it never marks the log. The next session finds the merge and changes
+`open` to `merged` (Session Start Protocol step 5).
 
 **Step 7 — Update timestamp**
 
 Write today's date to
-`[workspace folder]/skill-observations/last-review-date.txt`.
+`[workspace folder]/skill-observations/last-review-date.txt` in the same pass
+as Step 6, before Step 8. Read the file again after the write. A step that only
+records that work happened is the step most often skipped, because nothing
+downstream fails without it.
 
 **Step 8 — Present summary and user action items**
 
@@ -821,9 +835,22 @@ in each summary of work, and ask once at the first natural end of the task,
 such as an opened pull request, not at every summary. If the session ends
 without the review, append the date to `review-deferrals.txt`. It counts
 toward the third deferral.
+Before you offer an overdue review, look in the skills repository for a review
+commit or pull request dated after the timestamp. If one exists, the timestamp
+is stale. Report it, fix it, and do not offer the review.
 
 4. **Check the configuration file.** Run the config detection described in
 Recommended Activation Setup. Runs once per session.
+
+5. **Check that each merged skill is installed.** Where the skills live in a
+repository, compare each installed custom skill with the copy on the default
+branch, with line endings ignored. A skill whose installed copy carries local
+edits differs by those edits, so compare the rest. If the default branch is
+newer, report it and offer to install it. After the install, change the
+observations of that pull request from `open` to `merged`. Name each review
+pull request that is still open, so that the user can merge it. A review that
+ends in a pull request finishes after the session that opened it, and this step
+is where it finishes.
 
 ## Environment Compatibility
 
