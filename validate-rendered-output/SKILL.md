@@ -116,6 +116,15 @@ then arrived as a sentence from the user, one fault per round.
       DOM. When such a capture shows a fault, or shows a fix, measure the DOM
       and take a second capture before you act. In one session two captures
       showed faults that did not exist.
+- [ ] **Before you time a motion, count the frames that the page draws.**
+      Count animation frames for one second, with a timeout. A hidden or
+      background pane gives few frames or none: a frame loop never ran, an
+      animation stayed at time 0, and a smooth scroll did not move. None of
+      that is a fault of the page. Check that the page is visible and in front,
+      or ask the user to show it, or use a headless browser. A run where the
+      "off" case is slower than the "on" case is a sign of a throttle, not a
+      result. In one session three frame logs gave 33 ms, 1000 ms and 1000 ms
+      per frame, and all three measured the throttle.
 - [ ] **A capture is evidence only of the moment it was taken.** A capture
       taken right after an input can be from before the page drew the input,
       and a zoom tool can crop the last full capture, not the page now. Take a
@@ -173,6 +182,27 @@ then arrived as a sentence from the user, one fault per round.
       its neighbours, because the hidden copy set its baseline. Measure both
       axes of the changed element and of one neighbour, at rest and in the
       changed state. For text, read the text's own box, not only its cell.
+- [ ] **Measure a motion over time, not at its end.** A transition is a claim
+      about time, and a still capture cannot check it. Sample each moving
+      property on each frame, from the input to the end: opacity, transform,
+      scroll position, colour. Put two motions that run together on one time
+      axis, because one can hide the other. In one session a smooth scroll took
+      0.6 s and a fade took 0.2 s, so the fade ended before its panel came into
+      view. Both passed alone.
+- [ ] **Measure the longest gap between frames, too.** A motion can reach each
+      position that it should and still stall. To find the cause, switch off the
+      parts of the motion one at a time with a style injected into the live
+      page, before you edit any source. Run each case at least twice, because
+      the first run can be an outlier. In one session one part of three carried
+      a stall of 700 to 1000 ms: a margin animation on an `svg` root made the
+      browser lay out thousands of children again on each frame.
+- [ ] **Where the frame clock is slow or stopped, set the time yourself.**
+      Get the animations with `getAnimations()`, pause each one, and set its
+      `currentTime` to a list of fixed times. Read the computed values at each
+      time. This proves the path of a CSS animation with no live frame clock.
+      In one session two samples 400 ms apart were equal, because the pane did
+      not advance the clock. Five fixed times then showed a pulse move down the
+      rows, with the same count of bright rows at each time.
 - [ ] **A probe can cause the fault it reports.** After a harness reports a
       fault, read back the state that its own actions can move: the scroll
       offset of every ancestor, focus, hover, open menus. Then reproduce the
@@ -200,7 +230,8 @@ works, state in the response which of these you did:
    focus state that you saw zoomed. Name what no capture could reach, such as
    a native pop-up, as unseen.
 3. **Measured:** which property, over how many instances. For a new
-   element, include its box.
+   element, include its box. For a motion, give the frame count per second
+   that the page drew during the measurement, and the longest frame gap.
 
 If you did neither 2 nor 3, write "the layout is unchecked", in those words,
 and name the specific things that a person should look at.
