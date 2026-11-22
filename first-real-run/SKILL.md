@@ -56,6 +56,16 @@ default rather than the last resort.
       code that writes the artifact and find the exact shape it writes. A loader
       that accepts three shapes is three guesses, and the real one can still be
       a fourth.
+- [ ] **When the input is the user's own account or records, ask what kinds of
+      item it holds before you write the fixture.** Then take one read-only
+      look at the real input before you build on its shape. Documentation
+      shows what a source can return. It does not show what this user holds.
+      One feature watched a user's held positions for price alerts. Its
+      design, its questions to the user and its fixture all assumed stocks.
+      The first live run showed that the user held mainly options. Each option
+      code went to a price-history call, spent a separate quota, and was
+      skipped. The feature then needed a rule for which option positions lose
+      on a fall, and a lookup for the stock under each option.
 - [ ] **Run it once against the real artifact before calling it done.** Not a
       copy, not a trimmed sample you constructed — the file the upstream stage
       actually wrote.
