@@ -69,6 +69,23 @@ then arrived as a sentence from the user, one fault per round.
 
 ## B. See it — a browser is usually already installed
 
+- [ ] **Render the input that the user will look at next, not a sample that
+      shows the feature.** Before the report, ask what the user will open
+      next: the output of a test script, an empty state, a row with no data.
+      Render that input. A sample that you choose shows the case that you had
+      in mind, and the user's next look is often the empty case. In one session
+      a chat message was reformatted six times. Each round passed its tests and
+      a printed sample with data in every row. The user's next look was always
+      a test message with data in no row. In one round that message came out
+      with ragged columns, because the column widths ignored the rows with no
+      data.
+- [ ] **When the real renderer is out of reach, say so, and render the
+      closest stand-in at the target width.** A phone chat app, a mail client
+      or a printer does not run in a headless browser. Render the output as
+      fixed-width text at the width of the target, and name the stand-in in
+      the report. For a phone held upright, about 40 characters is an estimate
+      to check on the device. Say what the stand-in cannot show, such as how
+      wide the client's font draws a wide character.
 - [ ] **The absence of the preferred tool is not the absence of the
       capability.** When no browser extension or driver library works, look
       for an installed browser binary and use its headless mode (a run with no
@@ -226,9 +243,11 @@ Do not summarise this skill and move on. Before you say that a visual change
 works, state in the response which of these you did:
 
 1. **Syntax:** which parser, check or test ran.
-2. **Seen:** a screenshot, and at which viewport size. Name each hover or
-   focus state that you saw zoomed. Name what no capture could reach, such as
-   a native pop-up, as unseen.
+2. **Seen:** a screenshot, and at which viewport size. Name the input that
+   you rendered, and say whether it is the input that the user will see next.
+   Name each hover or focus state that you saw zoomed. Name what no capture
+   could reach, such as a native pop-up or a client app, as unseen, and name
+   the stand-in that you rendered in its place.
 3. **Measured:** which property, over how many instances. For a new
    element, include its box. For a motion, give the frame count per second
    that the page drew during the measurement, and the longest frame gap.
