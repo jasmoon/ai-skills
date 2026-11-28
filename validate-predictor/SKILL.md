@@ -1,6 +1,6 @@
 ---
 name: validate-predictor
-description: Pre-claim gate for any statement that an input, a rule, a label or a fitted score predicts an outcome. Load BEFORE you say a candidate "works", "earns weight", "beats chance", "passes the gate" or "holds out of sample"; before you report an AUC, a lift, a hit rate, a separation or a resample stability count; before you ask to read held-out data; and before you set up a scheduled or unattended run that screens candidates. A candidate can pass every check that was run and still be the label restated, a size signal read as a direction, an input that almost never fired, or noise that is equal in every unit. Triggers on feature screens, backtests, signal research, fitted weights, held-out reads, bootstrap or resample gates, "40 of 50 draws", mirrored labels, and a run of null results against one target. Pair with a CLAUDE.md instruction in any repo that measures predictors.
+description: Pre-claim gate for any statement that an input, a rule, a label or a fitted score predicts an outcome. Load BEFORE you say a candidate "works", "earns weight", "beats chance", "passes the gate" or "holds out of sample"; before you report an AUC, a lift, a hit rate, a separation or a resample stability count; before you ask to read held-out data; before a descriptive comparison of a current period with a past one that may later become a rule; and before you set up a scheduled or unattended run that screens candidates. A candidate can pass every check that was run and still be the label restated, a size signal read as a direction, an input that almost never fired, or noise that is equal in every unit. Triggers on feature screens, backtests, signal research, fitted weights, held-out reads, bootstrap or resample gates, "40 of 50 draws", mirrored labels, and a run of null results against one target. Pair with a CLAUDE.md instruction in any repo that measures predictors.
 ---
 
 # validate-predictor
@@ -69,6 +69,17 @@ Most reports state a number and stop. Name the four claims first.
       One project tested sixteen candidates against one fixed label, and every
       one read chance. The horizon had never been chosen, and the benchmark was
       absolute where most of the variance was common to every item.
+- [ ] **When the rule sets a price, part of the outcome follows from where it
+      set it.** A buy order placed under the market can fill only at a lower
+      price, so every fill "saves money". A count of savings then measures the
+      fill rate, and any order that fills often passes. The median has the
+      same fault: where more than half of the orders fill, the middle case is
+      a fill, and the median is above 0 whatever a miss costs. Judge the
+      average, with each miss at its real cost. Compare the chosen level with
+      a null order at the same distance that ignores the chart, such as the
+      real distances shuffled across the cases. In one project a design judged
+      the median and passed it on every shuffle of the null as well. With the
+      misses counted, the average lost in one half of the years.
 
 ---
 
@@ -144,6 +155,14 @@ units". It does not answer "is this larger than chance".
       `3/n`. That is below 3 in 100 after 100 trials. After 8 trials it is
       below about 31 in 100 by the exact count, and `3/n` gives 37. A bound
       quoted for 100 trials says nothing about 8.
+- [ ] **Keep "no evidence" apart from "evidence both ways" in the verdicts
+      that you fix before the run.** With two halves, add a verdict *the
+      halves disagree*: each half passes the draw test on its own, in opposite
+      directions. Say which periods carry each side. In one project a list of
+      three verdicts put that result under *cannot tell*, and only the prose
+      of the entry said that the reading turned over between periods. The two
+      results lead to different decisions: more data for the first, and no use
+      of the reading for the second.
 
 ---
 
@@ -168,6 +187,13 @@ candidate passes by chance, and it looks the same as a real result.
       the person asks for the held-out years. If a look crossed the split, say
       so, name the units it covered, and record them as seen, so that a later
       held-out read can report with and without them.
+- [ ] **A descriptive comparison is a look too.** "Is now normal against the
+      last fall?" claims no prediction, so nothing else here fires on it. But
+      it is often the first step of a rule. When any window that it compares
+      lies in the held-out half, record those dates as seen at the time of the
+      read, not later when a rule is proposed. In one project such a read
+      reported "held-out reads: 0", and one turn later it became the motivating
+      look for an indicator.
 - [ ] **Check the gap between the halves against the longest look-ahead of
       any label.** A split on the row date alone lets the labels of the last
       rows of the fit half read prices from the held-out half. Keep a gap of at
@@ -225,9 +251,9 @@ a trigger in the project's `CLAUDE.md`:
 
 ```markdown
 **Before you say that an input, a rule or a fitted score predicts an outcome,
-before you report a separation, a lift or a resample count, and before you ask
-to read held-out data, load the `validate-predictor` skill and work through
-it.**
+before you report a separation, a lift or a resample count, before you compare
+a current period with a past one, and before you ask to read held-out data,
+load the `validate-predictor` skill and work through it.**
 ```
 
 Add two or three of the project's own cases under it: the name of its gate, its
