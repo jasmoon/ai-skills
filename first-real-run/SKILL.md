@@ -94,6 +94,14 @@ default rather than the last resort.
 - [ ] **Print what the code actually sees** on that first run — the resolved
       config, the path it opened, the number of records it loaded, the first
       one. "Loaded 0" answers the question the tests could not.
+- [ ] **The newest row of a store may hold only part of its period.** Before
+      a measurement uses the newest date, compare the fetch time of its rows
+      with the close of that date's session. Where a session can be short, as
+      on a half day or a halt, compare the row count with the count that the
+      short session holds, not with a normal day's count. In one project the
+      newest half day read 0.27 against 0.32 to 0.55 for the others. Its rows
+      were fetched 75 minutes before that day's close, and an earlier record
+      had called the same day complete.
 - [ ] **When the data is a union of partitions, list each comparison that reads
       the whole union.** Markets, regions, tenants and time zones are
       partitions. A max or a min over the union is a hidden join. One table
@@ -242,6 +250,14 @@ print what the code actually sees. Before proposing a cause, not after.
 - [ ] **Read it back.** A reported write is not a landed write. "Wrote N" that
       counts rows *sent* rather than rows the database changed can be wrong for
       months without anyone noticing, because the number looks right.
+- [ ] **A staging or commit step must stop on its own error.** Never send the
+      error output of `git add` or of any write to `/dev/null`. Chain the steps
+      with `&&`, and before a commit assert that the unstaged list is empty,
+      or that it holds only files named as left out. In one session one path
+      in a `git add` list no longer existed, git refused the whole command,
+      and the hidden error let the commit run with only the renames that `git
+      mv` had staged. The push left the branch importing a package that did
+      not exist.
 - [ ] **A structural clone verifies the shape, not the path.** Creating a table
       like the live one checks columns, types, nullability and keys. It does not
       exercise the API, the serializer, the auth, or the constraint the live
