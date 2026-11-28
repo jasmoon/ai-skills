@@ -58,6 +58,13 @@ Output conforming to a schema can be entirely noise. Every check that measures
       the assertion cannot tell the difference. Confirm the failure arrives by
       the route you think it does before treating the test as a regression
       guard.
+- [ ] **A mutant that survives may point at a line with no job, not at a
+      missing test.** First find the input that makes the mutated line matter,
+      and read the whole output for that input. Then choose between a test and
+      the removal of the line. In one check two mutants removed one timer and
+      both survived. Another timer already did its work, except in one case,
+      and in that case the output dropped an item from both of its tables. A
+      test written to kill the mutant would have kept the timer and the hole.
 - [ ] **Treat a captured specimen as a dataset about the upstream system.** It
       answers questions it was never collected for — especially negative ones.
       An absent field is invisible from consuming code and obvious in a real
@@ -162,6 +169,22 @@ domain, and writing to a dead end. Each number alone told a flattering story.
       sign once against a known event — a split, a currency or scale change, a
       renumbering. Record the event and the expected factor beside the guard,
       so the next reader sees which sign was verified and which was not.
+- [ ] **Before you explain a short count, compute the count that the
+      explanation predicts.** Then check the time at which the data was taken
+      against the period it describes: a fetch during an open period gives a
+      part of that period. Write the fetch time, in the data's own time zone,
+      beside the count. In one record a day held 28 bars where a full session
+      holds 78, and the record called it a half day. A half day holds 42. The
+      fetch had run during the session, and the conclusion was right for the
+      wrong reason, so no check failed.
+- [ ] **A reference list from memory is a hypothesis.** When rows are selected
+      by a list of dates, codes or a calendar, name the list's source before
+      the first number that rests on it. Check the list against the
+      publisher's own document, and check one rule that generates it against
+      its edge cases. Output that looks right does not check the list, because
+      a wrong member can share the property that you measure. In one answer
+      two of nine holiday dates were full trading days, and both were thin
+      days, so their low values looked like confirmation.
 
 ---
 
