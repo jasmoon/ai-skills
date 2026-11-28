@@ -20,7 +20,7 @@ Automatically gather context from available sources:
 
 **When the request needs a data source the project has not used**, read the installed client library for that source — its method names and docstrings — before you plan how to get the data. Name each call that returns history, and the fields it does not return. A plan from memory once opened with months of forward collection; a search of the installed client found a call that returned the same history backward, which no project document named.
 
-**When a document states a limit of a data source**, check whether the limit belongs to the source or to one request. A depth written down after one fetch often records that fetch's arguments: one docstring said a source served bars "back to 2021", because the fetch had asked to start in 2021. Read the earliest date of each dated file that the project already fetched from that source, before you read the client library and before you plan a new fetch. A file on disk is the cheapest ground truth, and it costs no quota. In that project a file already in the repository held about 20 years.
+**When a document states a limit of a data source**, check whether the limit belongs to the source or to one request. A depth written down after one fetch often records that fetch's arguments: one docstring said a source served bars "back to 2021", because the fetch had asked to start in 2021. Read the earliest date of each dated file that the project already fetched from that source, before you read the client library and before you plan a new fetch. A file on disk is the cheapest ground truth, and it costs no quota. In that project a file already in the repository held about 20 years. Read the newest date too, and compare it with the window that the request is about. Where a loader resumes, read its skip condition and say whether a rerun extends the newest end. One table stopped two months before the window of a request, and its loader skipped any symbol whose rows reached back far enough, so a rerun would have returned the same stale rows with no error.
 
 **When the request is "look again at X" or "rethink X" and names no fault**, ask first what prompted it, with an open option, and do the deep read after the answer. The named part is where the user expects the change to land, not always what they want changed. One request to look again at how a held-out half was cut got a full analysis of the split, with four options that all assumed the split. The reason, asked last, was a new label. Do not give the reason question only options that stay inside X.
 
@@ -34,6 +34,10 @@ Then, identify what additional information you still need. Ask any clarifying qu
 - What the user is working on (if not clear from the gathered context)
 - The goals, constraints, or scope of the work
 - Any ambiguity in requirements or direction
+
+**Before a question states the cost of an option** — a fetch, a migration, a quota — run one query that looks for the needed data under every table and every symbol where it could live. Write the cost after the query. One question said that index volume "needs a schema change and a refetch", because one table had no volume column. The same instrument sat in the main bar table with full volume, and the user chose with the wrong cost in front of them.
+
+**Write each question as the results that the user would see.** Put the rule or the record that it rests on after the results, if at all. Before the question goes out, check that a reader who does not know the record can answer it. One question asked whether data "must still stay on your PC" and cited a decision number; it was the only one of four left unanswered. A second set, each question with an example of its result, was answered in full.
 
 Present these as a concise list and wait for the user's answers before proceeding. If the gathered context is sufficient and nothing is unclear, proceed directly to Phase 2.
 
