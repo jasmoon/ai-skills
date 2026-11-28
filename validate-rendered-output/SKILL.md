@@ -79,6 +79,22 @@ then arrived as a sentence from the user, one fault per round.
       a test message with data in no row. In one round that message came out
       with ragged columns, because the column widths ignored the rows with no
       data.
+- [ ] **A new caller of a shared renderer inherits none of the old caller's
+      filters.** Read the old caller's input builder, and list each filter and
+      each null check that it applies. Route the new caller through the same
+      builder, or render the input that each filter exists to drop. Add the
+      empty states that a live input has at certain times: before the first
+      bar of the day, and while the market is closed. In one session a new
+      caller built a point by hand and skipped the filter that dropped a null
+      score. The first real use came minutes after the open, before any score
+      existed, and the whole page went blank.
+- [ ] **Text moved to another surface keeps words that point at the old one.**
+      List each word that points at something on the old surface: a color, a
+      position such as "below", a control, a pronoun whose subject is on the
+      screen. Share the fact between the surfaces, and write the sentence again
+      for each one. In one session a chat message reused a page's sentence
+      that began "It is grey:". The message had no chart and no color, and a
+      plain-text print of the message showed the fault at once.
 - [ ] **When the real renderer is out of reach, say so, and render the
       closest stand-in at the target width.** A phone chat app, a mail client
       or a printer does not run in a headless browser. Render the output as
@@ -101,10 +117,27 @@ then arrived as a sentence from the user, one fault per round.
       found nothing. A browser had been installed the whole time. Three
       commands gave the answer: a container pushed the section 4460 pixels
       down. No reading of the source produces that number.
+
+      For a probe that must run inside the page, such as a frame count or a
+      scripted scroll, drive the same browser over the DevTools protocol.
+      Start it with `--remote-debugging-port`, read the page's WebSocket
+      address from `/json/list`, and send `Runtime.evaluate` with
+      `awaitPromise`. A runtime with a built-in WebSocket needs no install;
+      one such script was about 60 lines. Measure the idle frame rate first,
+      and stop if it is not near the display rate.
 - [ ] **Serve a copy of the real data.** A look at the page must not be able to
       write to the real store or call a live system. Where the server has an
       offline flag, use it, and prove that the process you started is the one
       that answers (see `first-real-run`, section B).
+- [ ] **In a git worktree, a named launch entry can run the main checkout.** A
+      preview launcher may read the main checkout's launch configuration and
+      start that code, on that checkout's copy of the data. Before the first
+      screenshot, request one field or marker that only the changed code
+      produces. Where the launcher cannot reach the worktree, start the server
+      from the worktree on another port, attach the browser by its URL, and
+      stop the server when the check ends. In one session the request for the
+      new field came back empty, and that showed the fault before any
+      screenshot.
 - [ ] **A safe server can still change its copy.** "Cannot reach the live
       system" and "does not change" are two properties. A job that starts on
       load can clear or rewrite the copy: one cached answer held 109 rows, and
@@ -229,6 +262,25 @@ then arrived as a sentence from the user, one fault per round.
       buttons covered. With vertical scrolls only, 19 of 19 received the
       pointer. Prefer a move that touches one axis or one element, such as
       `window.scrollBy`.
+- [ ] **An empty report from a performance observer may be a blind one.**
+      Before you trust "no long task", block the main thread on purpose for
+      about 100 ms and check that the observer reports it. In one hidden pane
+      a 120 ms busy loop also gave an empty list. Where the observer is blind,
+      measure the block with chained timers of about 5 ms, and record the
+      longest gap between them. That probe found 86 ms for one panel and
+      306 ms for six.
+- [ ] **Split a motion fault into "during the input" and "after it rests".**
+      Script two inputs: one with no rest, and one with rests longer than any
+      debounce in the code. In one session a continuous drag had no frame
+      over 17 ms, and a scroll with rests had frames up to 233 ms. So the
+      stall came from work that runs after the input stops.
+- [ ] **A break check starts with a control run.** A check that breaks each
+      line and counts a failing run as "caught" counts every break when the
+      suite is already red. Run the whole suite first, and stop when it fails.
+      Count a break as caught only when a named test fails that passes in the
+      control. In one session such a check reported 24 of 24 caught while one
+      test was already failing. With the control run, one of the 24 was a
+      real miss.
 - [ ] **Keep the harness as the regression test.**
 - [ ] **Say what the harness cannot do.** It shows that the output is well
       formed and that the properties you chose to measure hold. It cannot show
